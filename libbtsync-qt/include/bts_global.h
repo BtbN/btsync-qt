@@ -50,4 +50,7 @@ class LIBBTS_EXPORT BtsGlobal
 	public:
 	static void setApiKey(const BtsApiKey &key);
 	static BtsApiKey getApiKey();
+
+	static void setBtsyncExecutablePath(const QString &path);
+	static QString getBtsyncExecutablePath();
 };

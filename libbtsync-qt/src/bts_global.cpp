@@ -1,3 +1,4 @@
+#include <QProcessEnvironment>
 #include <QRegExp>
 
 #include "bts_global.h"
@@ -52,4 +53,27 @@ BtsApiKey BtsGlobal::getApiKey()
 	}
 
 	return globalApiKey;
+}
+
+
+static QString globalBtsExePath;
+
+void BtsGlobal::setBtsyncExecutablePath(const QString &path)
+{
+
+}
+
+QString BtsGlobal::getBtsyncExecutablePath()
+{
+	if(!globalBtsExePath.isEmpty())
+		return globalBtsExePath;
+
+	QProcessEnvironment procEnv = QProcessEnvironment::systemEnvironment();
+	if(procEnv.contains("BTSYNC_BINARY"))
+	{
+		globalBtsExePath = procEnv.value("BTSYNC_BINARY");
+		return globalBtsExePath;
+	}
+
+	throw BtsException("Unable to find btsync executable path");
 }
