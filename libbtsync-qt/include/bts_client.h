@@ -1,0 +1,28 @@
+#pragma once
+
+#include <QObject>
+#include "bts_export_helper.h"
+
+
+class LIBBTS_EXPORT BtsClient : public QObject
+{
+	Q_OBJECT
+
+	public:
+	BtsClient(QObject *parent = 0);
+	virtual ~BtsClient();
+
+	virtual QString getHost() = 0;
+	virtual int getPort() = 0;
+	virtual QString getUserName() = 0;
+	virtual QString getPassword() = 0;
+
+	virtual bool isClientReady() = 0;
+
+	public slots:
+	virtual void exitClient();
+
+	signals:
+	void clientStarted();
+	void clientExited();
+};

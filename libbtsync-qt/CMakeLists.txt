@@ -5,11 +5,15 @@ find_package(Qt5Network REQUIRED)
 
 set(libbtsync-qt_SOURCES
 	src/bts_global.cpp
+	src/bts_client.cpp
+	src/bts_spawnclient.cpp
 	)
 
 set(libbtsync-qt_HEADERS
 	include/bts_export_helper.h
 	include/bts_global.h
+	include/bts_client.h
+	include/bts_spawnclient.h
 	)
 
 add_library(libbtsync-qt SHARED
