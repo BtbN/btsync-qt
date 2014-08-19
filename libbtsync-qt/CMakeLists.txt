@@ -18,6 +18,8 @@ add_library(libbtsync-qt SHARED
 target_link_libraries(libbtsync-qt
 	Qt5::Core
 	Qt5::Network)
+target_include_directories(libbtsync-qt
+	PUBLIC include)
 set_target_properties(libbtsync-qt PROPERTIES
 	OUTPUT_NAME btsync-qt
 	VERSION 0
