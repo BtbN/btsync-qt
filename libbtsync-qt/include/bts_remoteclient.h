@@ -6,7 +6,7 @@
 
 struct BtsRemoteClient_private;
 
-class BtsRemoteClient : public BtsClient
+class LIBBTS_EXPORT BtsRemoteClient : public BtsClient
 {
 	Q_OBJECT
 
