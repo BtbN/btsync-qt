@@ -9,3 +9,7 @@
 #else
 # define LIBBTS_EXPORT
 #endif
+
+#ifdef _MSC_VER
+#define noexcept
+#endif

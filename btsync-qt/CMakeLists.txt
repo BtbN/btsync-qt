@@ -1,7 +1,6 @@
 project(btsync-qt)
 
 find_package(Qt5Widgets REQUIRED)
-find_package(Qrencode REQUIRED)
 
 if(UNIX)
 	set(btsync-qt_UNIX_SOURCES
@@ -33,5 +32,6 @@ add_executable(btsync-qt WIN32
 	${btsync-qt_UI_HEADERS})
 target_link_libraries(btsync-qt
 	libbtsync-qt
-	Qt5::Widgets
-	${QRENCODE_LIBRARIES})
+	qrencode
+	Qt5::Widgets)
+

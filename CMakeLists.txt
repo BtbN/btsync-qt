@@ -28,4 +28,5 @@ elseif(MSVC)
 endif()
 
 add_subdirectory(libbtsync-qt)
+add_subdirectory(libqrencode)
 add_subdirectory(btsync-qt)
