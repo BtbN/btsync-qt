@@ -1,9 +1,16 @@
+#include <QtDebug>
+
 #include <QTemporaryFile>
+#include <QStandardPaths>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QStringList>
 #include <QProcess>
 #include <QPointer>
 #include <QRegExp>
+#include <QTimer>
 #include <QUuid>
+#include <QDir>
 
 #include "bts_spawnclient.h"
 #include "bts_global.h"
@@ -22,6 +29,7 @@ struct BtsSpawnClient_private
 
 	QTemporaryFile configFile;
 	QPointer<QProcess> clientProc;
+	QPointer<QTimer> forceKillTimer;
 };
 
 BtsSpawnClient::BtsSpawnClient(QObject *parent)
@@ -34,10 +42,25 @@ BtsSpawnClient::BtsSpawnClient(QObject *parent)
 	randomize();
 
 	p->clientProc = nullptr;
+
+	p->forceKillTimer = new QTimer(this);
+	p->forceKillTimer->setSingleShot(true);
+	p->forceKillTimer->setInterval(2500);
+	connect(p->forceKillTimer, SIGNAL(timeout()), this, SLOT(killClient()));
 }
 
 BtsSpawnClient::~BtsSpawnClient()
 {
+	if(p->clientProc)
+	{
+		p->clientProc->terminate();
+
+		if(!p->clientProc->waitForFinished(2500))
+		{
+			p->clientProc->kill();
+		}
+	}
+
 	delete p;
 }
 
@@ -74,18 +97,67 @@ void BtsSpawnClient::exitClient()
 	exitClient(false);
 }
 
+void BtsSpawnClient::killClient()
+{
+	exitClient(true);
+}
+
 void BtsSpawnClient::exitClient(bool force)
 {
 	if(!p->clientProc)
 		return;
 
-	p->clientProc->terminate();
-
-	if(force && !p->clientProc->waitForFinished(5000))
+	if(force)
 	{
 		p->clientProc->kill();
+		p->forceKillTimer->stop();
+	}
+	else
+	{
+		p->clientProc->terminate();
+		p->forceKillTimer->start();
 	}
 }
+
+void BtsSpawnClient::startClient()
+{
+	if(isClientReady())
+		return;
+
+	QDir dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+	dataPath.mkpath("sync_storage");
+
+	if(!dataPath.cd("sync_storage"))
+	{
+		qDebug() << "Failed creating sync storage dir!";
+		return;
+	}
+
+	QJsonObject configObject;
+	configObject.insert("storage_path", dataPath.absolutePath());
+	configObject.insert("use_gui", false);
+
+	QJsonObject webuiObject;
+	webuiObject.insert("listen", QString("%1:%2").arg(p->host).arg(p->port));
+	webuiObject.insert("login", p->username);
+	webuiObject.insert("password", p->password);
+	webuiObject.insert("api_key", BtsGlobal::getApiKey().toString());
+
+	configObject.insert("webui", webuiObject);
+
+	p->configFile.open();
+	QJsonDocument saveDoc(configObject);
+	p->configFile.write(saveDoc.toJson());
+	p->configFile.close();
+
+	p->cur_port = p->port;
+	p->cur_password = p->password;
+	p->cur_username = p->username;
+
+	p->clientProc = new QProcess(this);
+	connect(p->clientProc, SIGNAL(finished(int)), this, SLOT(procFinished(int)));
+	connect(p->clientProc, SIGNAL(finished(int)), p->clientProc, SLOT(deleteLater()));
+	connect(p->clientProc, SIGNAL(started()), this, SLOT(procStarted()));
 
 #ifdef Q_OS_WIN
 # define ARG_PREFIX "/"
@@ -93,29 +165,27 @@ void BtsSpawnClient::exitClient(bool force)
 # define ARG_PREFIX "--"
 #endif
 
-void BtsSpawnClient::startClient()
-{
-	if(isClientReady())
-		return;
-
-	p->configFile.open();
-	//TODO: Write the actual config!
-	p->configFile.close();
-
-	p->clientProc = new QProcess(this);
-	connect(p->clientProc, SIGNAL(finished(int)), this, SLOT(procFinished()));
-	connect(p->clientProc, SIGNAL(finished(int)), p->clientProc, SLOT(deleteLater()));
-
 	p->clientProc->setProgram(BtsGlobal::getBtsyncExecutablePath());
-	p->clientProc->setArguments(QStringList() << ARG_PREFIX "config" << p->configFile.fileName());
+	p->clientProc->setArguments(QStringList()
+	                            << ARG_PREFIX "nodaemon"
+	                            << ARG_PREFIX "config" << p->configFile.fileName());
+
+	p->clientProc->setProcessChannelMode(QProcess::ForwardedChannels);
 
 	p->clientProc->start();
 }
 
 void BtsSpawnClient::restartClient()
 {
-	exitClient();
-	startClient();
+	if(!p->clientProc)
+	{
+		startClient();
+	}
+	else
+	{
+		connect(p->clientProc.data(), SIGNAL(finished(int)), this, SLOT(startClient()));
+		exitClient();
+	}
 }
 
 void BtsSpawnClient::setPort(int port)
@@ -157,7 +227,14 @@ void BtsSpawnClient::randomize()
 	randomizeCredentials();
 }
 
-void BtsSpawnClient::procFinished()
+void BtsSpawnClient::procStarted()
 {
+	p->configFile.remove();
+}
 
+void BtsSpawnClient::procFinished(int exitCode)
+{
+	p->forceKillTimer->stop();
+
+	qDebug() << "btsync finished with code" << exitCode;
 }

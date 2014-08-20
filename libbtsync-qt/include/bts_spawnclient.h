@@ -23,6 +23,7 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 
 	public slots:
 	void exitClient();
+	void killClient();
 	void exitClient(bool force);
 	void startClient();
 	void restartClient();
@@ -37,7 +38,8 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 	void randomize();
 
 	private slots:
-	void procFinished();
+	void procStarted();
+	void procFinished(int exitCode);
 
 	private:
 	BtsSpawnClient_private *p;

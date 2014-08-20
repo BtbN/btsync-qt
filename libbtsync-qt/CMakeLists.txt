@@ -20,8 +20,10 @@ add_library(libbtsync-qt SHARED
 	${libbtsync-qt_SOURCES}
 	${libbtsync-qt_HEADERS})
 target_link_libraries(libbtsync-qt
-	Qt5::Core
-	Qt5::Network)
+	PUBLIC
+		Qt5::Core
+	PRIVATE
+		Qt5::Network)
 target_include_directories(libbtsync-qt
 	PUBLIC include)
 set_target_properties(libbtsync-qt PROPERTIES

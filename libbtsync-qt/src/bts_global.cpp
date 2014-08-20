@@ -4,6 +4,11 @@
 #include "bts_global.h"
 
 
+BtsApiKey::BtsApiKey()
+{
+	key = QString();
+}
+
 BtsApiKey::BtsApiKey(const QString &key)
 {
 	setKey(key);
@@ -45,7 +50,7 @@ void BtsGlobal::setApiKey(const BtsApiKey &key)
 	globalApiKey = key;
 }
 
-BtsApiKey BtsGlobal::getApiKey()
+const BtsApiKey &BtsGlobal::getApiKey()
 {
 	if(!globalApiKey.isValid())
 	{
@@ -60,7 +65,7 @@ static QString globalBtsExePath;
 
 void BtsGlobal::setBtsyncExecutablePath(const QString &path)
 {
-
+	globalBtsExePath = path;
 }
 
 QString BtsGlobal::getBtsyncExecutablePath()

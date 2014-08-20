@@ -28,13 +28,15 @@ class LIBBTS_EXPORT BtsException : public std::exception
 class LIBBTS_EXPORT BtsApiKey
 {
 	public:
-	BtsApiKey(const QString &key = QString());
+	BtsApiKey();
+	BtsApiKey(const QString &key);
 	BtsApiKey(const char *key);
 
 	BtsApiKey& operator=(const QString &key);
 	BtsApiKey& operator=(const char *key);
 
 	operator QString() const { return key; }
+	QString toString() const { return key; }
 
 	inline bool isValid() { return !key.isEmpty(); }
 
@@ -49,7 +51,7 @@ class LIBBTS_EXPORT BtsGlobal
 {
 	public:
 	static void setApiKey(const BtsApiKey &key);
-	static BtsApiKey getApiKey();
+	static const BtsApiKey &getApiKey();
 
 	static void setBtsyncExecutablePath(const QString &path);
 	static QString getBtsyncExecutablePath();
