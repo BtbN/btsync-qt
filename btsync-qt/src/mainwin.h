@@ -13,7 +13,8 @@ class MainWin : public QMainWindow, private Ui::MainWin
 	MainWin(QWidget *parent = 0);
 	~MainWin();
 
-	private:
+	private slots:
+	void clientReady();
 
 	private:
 	MainWin_private *p;

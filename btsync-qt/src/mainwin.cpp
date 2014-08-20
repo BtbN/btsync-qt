@@ -1,6 +1,9 @@
+#include <QtDebug>
+
 #include <QTimer>
 
 #include <bts_spawnclient.h>
+#include <bts_api.h>
 
 #include "ui_devices.h"
 #include "ui_sharedFolders.h"
@@ -20,6 +23,7 @@ struct MainWin_private
 	Ui::preferencesWidget preferencesUi;
 
 	BtsSpawnClient *spcl;
+	BtsApi *api;
 };
 
 MainWin::MainWin(QWidget *parent)
@@ -36,6 +40,9 @@ MainWin::MainWin(QWidget *parent)
 	p->preferencesUi.setupUi(prefsTab);
 
 	p->spcl = new BtsSpawnClient(this);
+	p->api = new BtsApi(p->spcl, this);
+
+	connect(p->spcl, SIGNAL(clientStarted()), this, SLOT(clientReady()));
 
 	QTimer::singleShot(0, p->spcl, SLOT(startClient()));
 }
@@ -43,4 +50,11 @@ MainWin::MainWin(QWidget *parent)
 MainWin::~MainWin()
 {
 	delete p;
+}
+
+void MainWin::clientReady()
+{
+	qDebug() << "Client ready, getting folders!";
+
+	p->api->getFolders();
 }
