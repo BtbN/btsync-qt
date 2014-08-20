@@ -30,6 +30,8 @@ struct BtsSpawnClient_private
 	QTemporaryFile configFile;
 	QPointer<QProcess> clientProc;
 	QPointer<QTimer> forceKillTimer;
+
+	bool autorestart;
 };
 
 BtsSpawnClient::BtsSpawnClient(QObject *parent)
@@ -37,6 +39,7 @@ BtsSpawnClient::BtsSpawnClient(QObject *parent)
 {
 	p = new BtsSpawnClient_private();
 
+	p->autorestart = false;
 	p->cur_port = 0;
 	p->host = "127.0.0.1";
 	randomize();
@@ -64,6 +67,16 @@ BtsSpawnClient::~BtsSpawnClient()
 	}
 
 	delete p;
+}
+
+void BtsSpawnClient::setAutorestart(bool autorestart)
+{
+	p->autorestart = autorestart;
+}
+
+bool BtsSpawnClient::isAutorestart()
+{
+	return p->autorestart;
 }
 
 QString BtsSpawnClient::getHost()
@@ -245,9 +258,9 @@ void BtsSpawnClient::procFinished(int exitCode)
 
 	qDebug() << "btsync finished with code" << exitCode;
 
-	if(exitCode != 0)
+	if(exitCode != 0 || p->autorestart)
 	{
-		startClient();
+		QTimer::singleShot(1000, this, SLOT(startClient()));
 	}
 }
 

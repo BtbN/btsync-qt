@@ -19,6 +19,7 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 	QString getUserName();
 	QString getPassword();
 
+	bool isAutorestart();
 	bool isClientReady();
 
 	public slots:
@@ -28,6 +29,7 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 	void startClient();
 	void restartClient();
 
+	void setAutorestart(bool autorestart);
 	void setPort(int port);
 	void setHost(QString host);
 	void setUsername(QString username);
