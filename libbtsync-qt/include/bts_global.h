@@ -10,12 +10,12 @@ class LIBBTS_EXPORT BtsException : public std::exception
 	public:
 	BtsException(const QString &msg):msg(msg),constMsg(msg.toUtf8()) {}
 
-	QString getMessage() const
+	QString getMessage() const noexcept
 	{
 		return msg;
 	}
 
-	const char *what() const
+	const char *what() const noexcept
 	{
 		return constMsg.constData();
 	}
