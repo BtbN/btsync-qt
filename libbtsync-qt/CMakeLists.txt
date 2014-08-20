@@ -7,6 +7,7 @@ set(libbtsync-qt_SOURCES
 	src/bts_global.cpp
 	src/bts_client.cpp
 	src/bts_spawnclient.cpp
+	src/bts_remoteclient.cpp
 	)
 
 set(libbtsync-qt_HEADERS
@@ -14,6 +15,7 @@ set(libbtsync-qt_HEADERS
 	include/bts_global.h
 	include/bts_client.h
 	include/bts_spawnclient.h
+	include/bts_remoteclient.h
 	)
 
 add_library(libbtsync-qt SHARED
