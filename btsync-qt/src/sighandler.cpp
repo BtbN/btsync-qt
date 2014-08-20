@@ -58,12 +58,15 @@ SignalHandler::SignalHandler(QObject *parent)
 	snTerm = new QSocketNotifier(sigtermFd[1], QSocketNotifier::Read, this);
 	snInt = new QSocketNotifier(sigintFd[1], QSocketNotifier::Read, this);
 
+	connect(snHup, SIGNAL(activated(int)), this, SLOT(readHup()));
 	connect(snHup, SIGNAL(activated(int)), this, SIGNAL(sigHup()));
 	connect(snHup, SIGNAL(activated(int)), this, SIGNAL(sigQuitApp()));
 
+	connect(snTerm, SIGNAL(activated(int)), this, SLOT(readTerm()));
 	connect(snTerm, SIGNAL(activated(int)), this, SIGNAL(sigTerm()));
 	connect(snTerm, SIGNAL(activated(int)), this, SIGNAL(sigQuitApp()));
 
+	connect(snInt, SIGNAL(activated(int)), this, SLOT(readInt()));
 	connect(snInt, SIGNAL(activated(int)), this, SIGNAL(sigInt()));
 	connect(snInt, SIGNAL(activated(int)), this, SIGNAL(sigQuitApp()));
 }
@@ -135,4 +138,34 @@ error:
 	sigintFd[1] = -1;
 
 	return false;
+}
+
+void SignalHandler::readHup()
+{
+	snHup->setEnabled(false);
+
+	char a;
+	::read(sighupFd[1], &a, sizeof(a));
+
+	snHup->setEnabled(true);
+}
+
+void SignalHandler::readTerm()
+{
+	snTerm->setEnabled(false);
+
+	char a;
+	::read(sigtermFd[1], &a, sizeof(a));
+
+	snTerm->setEnabled(true);
+}
+
+void SignalHandler::readInt()
+{
+	snInt->setEnabled(false);
+
+	char a;
+	::read(sigintFd[1], &a, sizeof(a));
+
+	snInt->setEnabled(true);
 }

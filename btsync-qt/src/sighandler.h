@@ -23,6 +23,11 @@ class SignalHandler : public QObject
 	void sigInt();
 	void sigQuitApp();
 
+	private slots:
+	void readHup();
+	void readTerm();
+	void readInt();
+
 	private:
 	static int sighupFd[2];
 	static int sigtermFd[2];

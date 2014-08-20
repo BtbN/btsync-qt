@@ -40,6 +40,7 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 	private slots:
 	void procStarted();
 	void procFinished(int exitCode);
+	void removeConfig();
 
 	private:
 	BtsSpawnClient_private *p;

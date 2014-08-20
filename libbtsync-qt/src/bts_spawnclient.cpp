@@ -59,6 +59,8 @@ BtsSpawnClient::~BtsSpawnClient()
 		{
 			p->clientProc->kill();
 		}
+
+		emit clientExited();
 	}
 
 	delete p;
@@ -150,6 +152,8 @@ void BtsSpawnClient::startClient()
 	p->configFile.write(saveDoc.toJson());
 	p->configFile.close();
 
+	p->configFile.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
+
 	p->cur_port = p->port;
 	p->cur_password = p->password;
 	p->cur_username = p->username;
@@ -229,12 +233,25 @@ void BtsSpawnClient::randomize()
 
 void BtsSpawnClient::procStarted()
 {
-	p->configFile.remove();
+	emit clientStarted();
+
+	QTimer::singleShot(10000, this, SLOT(removeConfig()));
 }
 
 void BtsSpawnClient::procFinished(int exitCode)
 {
 	p->forceKillTimer->stop();
+	emit clientExited();
 
 	qDebug() << "btsync finished with code" << exitCode;
+
+	if(exitCode != 0)
+	{
+		startClient();
+	}
+}
+
+void BtsSpawnClient::removeConfig()
+{
+	p->configFile.remove();
 }
