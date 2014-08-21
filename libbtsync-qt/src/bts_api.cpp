@@ -389,8 +389,33 @@ void BtsApi::getFolderPeers(const QString &secret)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getFolderPeersResult();
+		QJsonArray arr = doc.array();
+		QVector<BtsGetFolderPeersResult> res;
+		res.reserve(arr.size());
+
+		for(const QJsonValue &val: arr)
+		{
+			QJsonObject peerObj = val.toObject();
+
+			if(peerObj.isEmpty())
+			{
+				emit error("Got an unexpected get_folder_peers reply format");
+				return;
+			}
+
+			BtsGetFolderPeersResult resObj;
+
+			resObj.id = peerObj.value("id").toString();
+			resObj.connection = peerObj.value("connection").toString();
+			resObj.name = peerObj.value("name").toString();
+			resObj.synced = peerObj.value("synced").toVariant().toLongLong();
+			resObj.download = peerObj.value("download").toVariant().toLongLong();
+			resObj.upload = peerObj.value("upload").toVariant().toLongLong();
+
+			res << resObj;
+		}
+
+		emit getFolderPeersResult(res);
 	});
 }
 
