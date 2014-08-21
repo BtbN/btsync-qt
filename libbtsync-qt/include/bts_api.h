@@ -38,13 +38,17 @@ struct LIBBTS_EXPORT BtsGetFolderPeersResult
 
 enum BtsGetFilesResultType
 {
+	Unknown,
 	File,
+	EmptyFile,
 	Folder
 };
 
 struct LIBBTS_EXPORT BtsGetFilesResult
 {
 	BtsGetFilesResultType type;
+	QString typeString;
+
 	QString name;
 	QString state;
 
@@ -96,7 +100,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void getFoldersResult(const QVector<BtsGetFoldersResult> &result);
 	void addFolderResult();
 	void removeFolderResult();
-	void getFilesResult();
+	void getFilesResult(const QVector<BtsGetFilesResult> &result);
 	void setFilePrefsResult();
 	void getFolderPeersResult();
 	void getSecretsResult(const QString &readOnly, const QString &readWrite, const QString &encryption);

@@ -265,8 +265,48 @@ void BtsApi::getFiles(const QString &secret, const QString &path)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getFilesResult();
+		QJsonArray arr = doc.array();
+		QVector<BtsGetFilesResult> res;
+		res.reserve(arr.size());
+
+		for(const QJsonValue &val: arr)
+		{
+			QJsonObject fileObj = val.toObject();
+
+			if(fileObj.isEmpty())
+			{
+				emit error("Got an unexpected get_files reply format");
+				return;
+			}
+
+			BtsGetFilesResult resObj;
+
+			resObj.typeString = fileObj.value("type").toString();
+
+			if(resObj.typeString == "file")
+				resObj.type = BtsGetFilesResultType::File;
+			else if(resObj.typeString == "folder")
+				resObj.type = BtsGetFilesResultType::Folder;
+			else if(resObj.typeString == "empty")
+				resObj.type = BtsGetFilesResultType::EmptyFile;
+			else
+				resObj.type = BtsGetFilesResultType::Unknown;
+
+			resObj.name = fileObj.value("name").toString();
+			resObj.state = fileObj.value("state").toString();
+
+			if(resObj.type == BtsGetFilesResultType::File)
+			{
+				resObj.size = fileObj.value("size").toVariant().toLongLong();
+				resObj.total_pieces = fileObj.value("total_pieces").toInt();
+				resObj.have_pieces = fileObj.value("have_pieces").toInt();
+				resObj.download = fileObj.value("download").toInt(1) ? true : false;
+			}
+
+			res << resObj;
+		}
+
+		emit getFilesResult(res);
 	});
 }
 

@@ -59,5 +59,5 @@ void MainWin::clientReady()
 	p->api->getFolders();
 	//p->api->addFolder("D:/Test");
 
-	QTimer::singleShot(2500, p->api, SLOT(getFolders()));
+	p->api->getFiles("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
 }
