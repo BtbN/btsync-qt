@@ -66,6 +66,9 @@ void MainWin::clientReady()
 	//p->api->getFiles("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
 	//p->api->setFilePrefs("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT", "test1/Neues Textdokument.txt", false);
 
+	p->api->getSecrets();
+	p->api->getSecrets("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
+
 	QTimer::singleShot(5000, this, SLOT(afterTimer()));
 }
 

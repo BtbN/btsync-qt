@@ -83,7 +83,8 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void getFiles(const QString &secret, const QString &path = QString());
 	void setFilePrefs(const QString &secret, const QString &path, bool download);
 	void getFolderPeers(const QString &secret);
-	void getSecrets(const QString &secret = QString());
+	void getSecrets(bool encryption = false, const QString &secret = QString());
+	void getSecrets(const QString &secret);
 	void getFolderPrefs(const QString &secret);
 	void setFolderPrefs(const QString &secret, const QVariantHash &prefs);
 	void getFolderHosts(const QString &secret);
@@ -103,7 +104,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void getFilesResult(const QVector<BtsGetFilesResult> &result);
 	void setFilePrefsResult(const QVector<BtsGetFilesResult> &result);
 	void getFolderPeersResult(const QVector<BtsGetFolderPeersResult> &result);
-	void getSecretsResult(const QString &readOnly, const QString &readWrite, const QString &encryption);
+	void getSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
 	void getFolderPrefsResult();
 	void setFolderPrefsResult();
 	void getFolderHostsResult();

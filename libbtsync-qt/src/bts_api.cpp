@@ -419,12 +419,15 @@ void BtsApi::getFolderPeers(const QString &secret)
 	});
 }
 
-void BtsApi::getSecrets(const QString &secret)
+void BtsApi::getSecrets(bool encryption, const QString &secret)
 {
 	QueryList ql;
 
 	if(!secret.isEmpty())
 		ql << QueryPair("secret", secret);
+
+	if(encryption)
+		ql << QueryPair("type", "encryption");
 
 	QUrl apiUrl = getApiUrl(p, "get_secrets", ql);
 
@@ -440,9 +443,19 @@ void BtsApi::getSecrets(const QString &secret)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getSecretsResult("", "", "");
+		QJsonObject obj = doc.object();
+
+		QString rw = obj.value("read_write").toString();
+		QString ro = obj.value("read_only").toString();
+		QString ec = obj.value("encryption").toString();
+
+		emit getSecretsResult(rw, ro, ec);
 	});
+}
+
+void BtsApi::getSecrets(const QString &secret)
+{
+	getSecrets(false, secret);
 }
 
 void BtsApi::getFolderPrefs(const QString &secret)
