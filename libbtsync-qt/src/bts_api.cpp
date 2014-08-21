@@ -86,7 +86,18 @@ bool BtsApi::checkForError(const QJsonDocument &doc)
 {
 	qDebug() << doc;
 
-	return false;
+	QJsonObject obj = doc.object();
+
+	int errorCode = obj.value("error").toInt(0);
+
+	if(errorCode == 0)
+		return false;
+
+	QString errorString = obj.value("message").toString("no error message");
+
+	emit error(QString("BTSync error %1: %2").arg(errorCode).arg(errorString));
+
+	return true;
 }
 
 static void assertClient(BtsApi_private *p)
