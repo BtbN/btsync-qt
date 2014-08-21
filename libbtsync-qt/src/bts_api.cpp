@@ -610,8 +610,13 @@ void BtsApi::getPreferences()
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getPreferencesResult();
+		QJsonObject obj = doc.object();
+		QVariantHash res;
+
+		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
+			res[it.key()] = it.value();
+
+		emit getPreferencesResult(res);
 	});
 }
 
@@ -636,8 +641,13 @@ void BtsApi::setPreferences(const QVariantHash &prefs)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit setPreferencesResult();
+		QJsonObject obj = doc.object();
+		QVariantHash res;
+
+		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
+			res[it.key()] = it.value();
+
+		emit setPreferencesResult(res);
 	});
 }
 
