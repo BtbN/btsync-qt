@@ -239,7 +239,7 @@ void BtsApi::removeFolder(const QString &secret)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -249,7 +249,7 @@ void BtsApi::removeFolder(const QString &secret)
 		if(checkForError(doc))
 			return;
 
-		emit removeFolderResult();
+		emit removeFolderResult(secret);
 	});
 }
 
@@ -298,7 +298,7 @@ void BtsApi::getFiles(const QString &secret, const QString &path)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -329,7 +329,7 @@ void BtsApi::getFiles(const QString &secret, const QString &path)
 			res << resObj;
 		}
 
-		emit getFilesResult(res);
+		emit getFilesResult(res, secret);
 	});
 }
 
@@ -345,7 +345,7 @@ void BtsApi::setFilePrefs(const QString &secret, const QString &path, bool downl
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -376,7 +376,7 @@ void BtsApi::setFilePrefs(const QString &secret, const QString &path, bool downl
 			res << resObj;
 		}
 
-		emit setFilePrefsResult(res);
+		emit setFilePrefsResult(res, secret);
 	});
 }
 
@@ -390,7 +390,7 @@ void BtsApi::getFolderPeers(const QString &secret)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -426,7 +426,7 @@ void BtsApi::getFolderPeers(const QString &secret)
 			res << resObj;
 		}
 
-		emit getFolderPeersResult(res);
+		emit getFolderPeersResult(res, secret);
 	});
 }
 
@@ -479,7 +479,7 @@ void BtsApi::getFolderPrefs(const QString &secret)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -495,7 +495,7 @@ void BtsApi::getFolderPrefs(const QString &secret)
 		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
 			res[it.key()] = it.value();
 
-		emit getFolderPrefsResult(res);
+		emit getFolderPrefsResult(res, secret);
 	});
 }
 
@@ -512,7 +512,7 @@ void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -528,7 +528,7 @@ void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
 		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
 			res[it.key()] = it.value();
 
-		emit setFolderPrefsResult(res);
+		emit setFolderPrefsResult(res, secret);
 	});
 }
 
@@ -542,7 +542,7 @@ void BtsApi::getFolderHosts(const QString &secret)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -559,7 +559,7 @@ void BtsApi::getFolderHosts(const QString &secret)
 		for(const QJsonValue &val: arr)
 			res << val.toString();
 
-		emit getFolderHostsResult(res);
+		emit getFolderHostsResult(res, secret);
 	});
 }
 
@@ -578,7 +578,7 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -595,7 +595,7 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 		for(const QJsonValue &val: arr)
 			res << val.toString();
 
-		emit setFolderHostsResult(res);
+		emit setFolderHostsResult(res, secret);
 	});
 }
 
