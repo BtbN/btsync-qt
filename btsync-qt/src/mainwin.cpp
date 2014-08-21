@@ -43,6 +43,10 @@ MainWin::MainWin(QWidget *parent)
 	p->api = new BtsApi(p->spcl, this);
 
 	connect(p->spcl, SIGNAL(clientStarted()), this, SLOT(clientReady()));
+	connect(p->api, &BtsApi::error, [](const QString &error)
+	{
+		qDebug() << error;
+	});
 
 	QTimer::singleShot(0, p->spcl, SLOT(startClient()));
 }
@@ -56,8 +60,10 @@ void MainWin::clientReady()
 {
 	qDebug() << "Client ready, getting folders!";
 
-	p->api->getFolders();
-	//p->api->addFolder("D:/Test");
+	//p->api->getFolders();
 
-	p->api->getFiles("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
+	//p->api->addFolder("D:/Test");
+	//p->api->getFiles("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
+
+	p->api->setFilePrefs("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT", "test1/Neues Textdokument.txt", false);
 }

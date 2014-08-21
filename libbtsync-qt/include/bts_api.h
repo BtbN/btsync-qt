@@ -101,7 +101,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void addFolderResult();
 	void removeFolderResult();
 	void getFilesResult(const QVector<BtsGetFilesResult> &result);
-	void setFilePrefsResult();
+	void setFilePrefsResult(const QVector<BtsGetFilesResult> &result);
 	void getFolderPeersResult();
 	void getSecretsResult(const QString &readOnly, const QString &readWrite, const QString &encryption);
 	void getFolderPrefsResult();
