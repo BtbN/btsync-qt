@@ -57,4 +57,5 @@ void MainWin::clientReady()
 	qDebug() << "Client ready, getting folders!";
 
 	p->api->getFolders();
+	p->api->addFolder("C:/blablablabla");
 }

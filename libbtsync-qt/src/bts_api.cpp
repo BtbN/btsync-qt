@@ -50,6 +50,10 @@ BtsApi::BtsApi(BtsClient *client, QObject *parent)
 void BtsApi::init()
 {
 	p->nam = new QNetworkAccessManager(this);
+	connect(p->nam, &QNetworkAccessManager::finished, [](QNetworkReply *reply)
+	{
+		reply->deleteLater();
+	});
 }
 
 BtsApi::~BtsApi()
@@ -65,6 +69,24 @@ void BtsApi::setClient(BtsClient *client)
 BtsClient *BtsApi::getClient()
 {
 	return p->client;
+}
+
+bool BtsApi::checkForError(QNetworkReply *reply)
+{
+	if(reply->error() != QNetworkReply::NoError)
+	{
+		emit error(QString("Network request to BTSync failed: %1").arg(reply->errorString()));
+		return true;
+	}
+
+	return false;
+}
+
+bool BtsApi::checkForError(const QJsonDocument &doc)
+{
+	qDebug() << doc;
+
+	return false;
 }
 
 static void assertClient(BtsApi_private *p)
@@ -116,18 +138,410 @@ void BtsApi::getFolders(const QString &secret)
 
 	connect(reply, &QNetworkReply::finished, [this, reply]()
 	{
-		if(reply->error() != QNetworkReply::NoError)
-		{
-			emit error(QString("Network request to btsync api failed: %1").arg(reply->errorString()));
+		if(checkForError(reply))
 			return;
-		}
 
-		qDebug() << QString::fromUtf8(reply->readAll());
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		BtsGetFoldersResult res;
+		if(checkForError(doc))
+			return;
+
+		QVector<BtsGetFoldersResult> res;
 
 		emit getFoldersResult(res);
+	});
+}
 
-		reply->deleteLater();
+void BtsApi::addFolder(const QString &dir, bool selective_sync, const QString &secret)
+{
+	QueryList ql;
+
+	ql << QueryPair("dir", dir);
+
+	if(!secret.isEmpty())
+		ql << QueryPair("secret", secret);
+
+	if(selective_sync)
+		ql << QueryPair("selective_sync", "1");
+
+	QUrl apiUrl = getApiUrl(p, "add_folder", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		emit addFolderResult();
+	});
+}
+
+void BtsApi::removeFolder(const QString &secret)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret);
+
+	QUrl apiUrl = getApiUrl(p, "remove_folder", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		emit removeFolderResult();
+	});
+}
+
+void BtsApi::getFiles(const QString &secret, const QString &path)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret);
+
+	if(!path.isEmpty())
+		ql << QueryPair("path", path);
+
+	QUrl apiUrl = getApiUrl(p, "get_files", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getFilesResult();
+	});
+}
+
+void BtsApi::setFilePrefs(const QString &secret, const QString &path, bool download)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret)
+	   << QueryPair("path", path)
+	   << QueryPair("download", download ? "1" : "0");
+
+	QUrl apiUrl = getApiUrl(p, "set_file_prefs", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit setFilePrefsResult();
+	});
+}
+
+void BtsApi::getFolderPeers(const QString &secret)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret);
+
+	QUrl apiUrl = getApiUrl(p, "get_folder_peers", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getFolderPeersResult();
+	});
+}
+
+void BtsApi::getSecrets(const QString &secret)
+{
+	QueryList ql;
+
+	if(!secret.isEmpty())
+		ql << QueryPair("secret", secret);
+
+	QUrl apiUrl = getApiUrl(p, "get_secrets", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getSecretsResult("", "", "");
+	});
+}
+
+void BtsApi::getFolderPrefs(const QString &secret)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret);
+
+	QUrl apiUrl = getApiUrl(p, "get_folder_prefs", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getFolderPrefsResult();
+	});
+}
+
+void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret);
+
+	for(auto it = prefs.constBegin(); it != prefs.constEnd(); ++it)
+		ql << QueryPair(it.key(), it.value().toString());
+
+	QUrl apiUrl = getApiUrl(p, "set_folder_prefs", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit setFolderPrefsResult();
+	});
+}
+
+void BtsApi::getFolderHosts(const QString &secret)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret);
+
+	QUrl apiUrl = getApiUrl(p, "get_folder_hosts", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getFolderHostsResult();
+	});
+}
+
+void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
+{
+	QueryList ql;
+
+	ql << QueryPair("secret", secret)
+	   << QueryPair("hosts", hosts.join(','));
+
+	QUrl apiUrl = getApiUrl(p, "set_folder_hosts", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit setFolderHostsResult();
+	});
+}
+
+void BtsApi::getPreferences()
+{
+	QUrl apiUrl = getApiUrl(p, "get_prefs");
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getPreferencesResult();
+	});
+}
+
+void BtsApi::setPreferences(const QVariantHash &prefs)
+{
+	QueryList ql;
+
+	for(auto it = prefs.constBegin(); it != prefs.constEnd(); ++it)
+		ql << QueryPair(it.key(), it.value().toString());
+
+	QUrl apiUrl = getApiUrl(p, "set_prefs", ql);
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit setPreferencesResult();
+	});
+}
+
+void BtsApi::getOsName()
+{
+	QUrl apiUrl = getApiUrl(p, "get_os");
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getOsNameResult();
+	});
+}
+
+void BtsApi::getVersion()
+{
+	QUrl apiUrl = getApiUrl(p, "get_version");
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getVersionResult();
+	});
+}
+
+void BtsApi::getSpeed()
+{
+	QUrl apiUrl = getApiUrl(p, "get_speed");
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		//TODO
+		emit getSpeedResult();
+	});
+}
+
+void BtsApi::shutdown()
+{
+	QUrl apiUrl = getApiUrl(p, "shutdown");
+
+	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+
+	connect(reply, &QNetworkReply::finished, [this, reply]()
+	{
+		if(checkForError(reply))
+			return;
+
+		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+
+		if(checkForError(doc))
+			return;
+
+		emit shutdownResult();
 	});
 }

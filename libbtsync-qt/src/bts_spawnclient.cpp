@@ -14,6 +14,7 @@
 
 #include "bts_spawnclient.h"
 #include "bts_global.h"
+#include "bts_api.h"
 
 
 struct BtsSpawnClient_private
@@ -56,11 +57,17 @@ BtsSpawnClient::~BtsSpawnClient()
 {
 	if(p->clientProc)
 	{
+		BtsApi api(this);
+
+		api.shutdown();
+		p->clientProc->waitForFinished(5000);
+
 		p->clientProc->terminate();
 
-		if(!p->clientProc->waitForFinished(2500))
+		if(!p->clientProc->waitForFinished(5000))
 		{
 			p->clientProc->kill();
+			p->clientProc->waitForFinished(500);
 		}
 
 		emit clientExited();

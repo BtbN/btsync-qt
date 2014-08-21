@@ -2,6 +2,12 @@
 
 #include <QObject>
 #include <QString>
+#include <QVector>
+#include <QList>
+#include <QHash>
+
+class QJsonDocument;
+class QNetworkReply;
 
 #include "bts_export_helper.h"
 
@@ -20,6 +26,34 @@ struct LIBBTS_EXPORT BtsGetFoldersResult
 	int indexing;
 };
 
+struct LIBBTS_EXPORT BtsGetFolderPeersResult
+{
+	QString id;
+	QString connection;
+	QString name;
+	qint64 synced;
+	qint64 download;
+	qint64 upload;
+};
+
+enum BtsGetFilesResultType
+{
+	File,
+	Folder
+};
+
+struct LIBBTS_EXPORT BtsGetFilesResult
+{
+	BtsGetFilesResultType type;
+	QString name;
+	QString state;
+
+	int total_pieces;
+	int have_pieces;
+	qint64 size;
+	bool download;
+};
+
 class LIBBTS_EXPORT BtsApi : public QObject
 {
 	Q_OBJECT
@@ -34,12 +68,48 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void setClient(BtsClient *client);
 	BtsClient *getClient();
 
+	private:
+	bool checkForError(QNetworkReply *reply);
+	bool checkForError(const QJsonDocument &doc);
+
 	public slots:
 	void getFolders(const QString &secret = QString());
+	void addFolder(const QString &dir, bool selective_sync = false, const QString &secret = QString());
+	void removeFolder(const QString &secret);
+	void getFiles(const QString &secret, const QString &path = QString());
+	void setFilePrefs(const QString &secret, const QString &path, bool download);
+	void getFolderPeers(const QString &secret);
+	void getSecrets(const QString &secret = QString());
+	void getFolderPrefs(const QString &secret);
+	void setFolderPrefs(const QString &secret, const QVariantHash &prefs);
+	void getFolderHosts(const QString &secret);
+	void setFolderHosts(const QString &secret, const QStringList &hosts);
+	void getPreferences();
+	void setPreferences(const QVariantHash &prefs);
+	void getOsName();
+	void getVersion();
+	void getSpeed();
+	void shutdown();
 
 	signals:
 	void error(const QString &errorString);
-	void getFoldersResult(const BtsGetFoldersResult &result);
+	void getFoldersResult(const QVector<BtsGetFoldersResult> &result);
+	void addFolderResult();
+	void removeFolderResult();
+	void getFilesResult();
+	void setFilePrefsResult();
+	void getFolderPeersResult();
+	void getSecretsResult(const QString &readOnly, const QString &readWrite, const QString &encryption);
+	void getFolderPrefsResult();
+	void setFolderPrefsResult();
+	void getFolderHostsResult();
+	void setFolderHostsResult();
+	void getPreferencesResult();
+	void setPreferencesResult();
+	void getOsNameResult();
+	void getVersionResult();
+	void getSpeedResult();
+	void shutdownResult();
 
 	private:
 	BtsApi_private *p;
