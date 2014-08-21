@@ -157,7 +157,32 @@ void BtsApi::getFolders(const QString &secret)
 		if(checkForError(doc))
 			return;
 
+		QJsonArray arr = doc.array();
 		QVector<BtsGetFoldersResult> res;
+		res.reserve(arr.size());
+
+		for(const QJsonValue &val: arr)
+		{
+			QJsonObject folderObj = val.toObject();
+
+			if(folderObj.isEmpty())
+			{
+				emit error("Got an unexpected get_folders reply format");
+				return;
+			}
+
+			BtsGetFoldersResult resObj;
+
+			resObj.dir = folderObj.value("dir").toString();
+			resObj.secret = folderObj.value("secret").toString();
+			resObj.size = folderObj.value("size").toVariant().toLongLong();
+			resObj.type = folderObj.value("type").toString();
+			resObj.files = folderObj.value("files").toVariant().toLongLong();
+			resObj.error = folderObj.value("error").toInt();
+			resObj.indexing = folderObj.value("indexing").toInt();
+
+			res << resObj;
+		}
 
 		emit getFoldersResult(res);
 	});
