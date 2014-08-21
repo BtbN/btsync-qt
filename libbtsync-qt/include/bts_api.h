@@ -79,6 +79,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	public slots:
 	void getFolders(const QString &secret = QString());
 	void addFolder(const QString &dir, bool selective_sync = false, const QString &secret = QString());
+	void addFolder(const QString &dir, const QString &secret);
 	void removeFolder(const QString &secret);
 	void getFiles(const QString &secret, const QString &path = QString());
 	void setFilePrefs(const QString &secret, const QString &path, bool download);

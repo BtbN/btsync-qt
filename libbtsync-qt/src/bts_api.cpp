@@ -224,6 +224,11 @@ void BtsApi::addFolder(const QString &dir, bool selective_sync, const QString &s
 	});
 }
 
+void BtsApi::addFolder(const QString &dir, const QString &secret)
+{
+	addFolder(dir, false, secret);
+}
+
 void BtsApi::removeFolder(const QString &secret)
 {
 	QueryList ql;
