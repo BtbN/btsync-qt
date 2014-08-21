@@ -667,8 +667,9 @@ void BtsApi::getOsName()
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getOsNameResult();
+		QJsonObject obj = doc.object();
+
+		emit getOsNameResult(obj.value("os").toString());
 	});
 }
 
@@ -688,8 +689,9 @@ void BtsApi::getVersion()
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getVersionResult();
+		QJsonObject obj = doc.object();
+
+		emit getVersionResult(obj.value("os").toString());
 	});
 }
 
@@ -709,8 +711,12 @@ void BtsApi::getSpeed()
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getSpeedResult();
+		QJsonObject obj = doc.object();
+
+		qint64 down = obj.value("download").toVariant().toLongLong();
+		qint64 up = obj.value("upload").toVariant().toLongLong();
+
+		emit getSpeedResult(down, up);
 	});
 }
 

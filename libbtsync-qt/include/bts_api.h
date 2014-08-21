@@ -111,9 +111,9 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void setFolderHostsResult(const QStringList &hosts);
 	void getPreferencesResult(const QVariantHash &prefs);
 	void setPreferencesResult(const QVariantHash &prefs);
-	void getOsNameResult();
-	void getVersionResult();
-	void getSpeedResult();
+	void getOsNameResult(const QString &os);
+	void getVersionResult(const QString &version);
+	void getSpeedResult(qint64 down, qint64 up);
 	void shutdownResult();
 
 	private:
