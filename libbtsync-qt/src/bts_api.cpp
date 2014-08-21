@@ -478,8 +478,13 @@ void BtsApi::getFolderPrefs(const QString &secret)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getFolderPrefsResult();
+		QJsonObject obj = doc.object();
+		QVariantHash res;
+
+		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
+			res[it.key()] = it.value();
+
+		emit getFolderPrefsResult(res);
 	});
 }
 
@@ -506,8 +511,13 @@ void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit setFolderPrefsResult();
+		QJsonObject obj = doc.object();
+		QVariantHash res;
+
+		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
+			res[it.key()] = it.value();
+
+		emit setFolderPrefsResult(res);
 	});
 }
 
