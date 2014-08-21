@@ -107,8 +107,8 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void getSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
 	void getFolderPrefsResult(const QVariantHash &prefs);
 	void setFolderPrefsResult(const QVariantHash &prefs);
-	void getFolderHostsResult();
-	void setFolderHostsResult();
+	void getFolderHostsResult(const QStringList &hosts);
+	void setFolderHostsResult(const QStringList &hosts);
 	void getPreferencesResult();
 	void setPreferencesResult();
 	void getOsNameResult();

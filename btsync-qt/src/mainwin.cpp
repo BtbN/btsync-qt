@@ -66,7 +66,8 @@ void MainWin::clientReady()
 	//p->api->getFiles("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
 	//p->api->setFilePrefs("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT", "test1/Neues Textdokument.txt", false);
 
-	p->api->getFolderPrefs("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
+	p->api->setFolderHosts("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT", QStringList());
+	p->api->getFolderHosts("A5NR3VPU5W6K3KQN6L5WJROVXVNAMGYTT");
 
 	QTimer::singleShot(5000, this, SLOT(afterTimer()));
 }

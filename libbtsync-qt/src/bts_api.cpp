@@ -11,6 +11,7 @@
 
 #include <QUrlQuery>
 #include <QPointer>
+#include <QRegExp>
 #include <QList>
 #include <QPair>
 #include <QUrl>
@@ -129,7 +130,12 @@ static QUrl getApiUrl(BtsApi_private *p, const QString &method, const QueryList 
 	urlQuery.addQueryItem("method", method);
 
 	for(const QueryPair &qp: querylist)
-		urlQuery.addQueryItem(qp.first, qp.second);
+	{
+		if(qp.second.isNull())
+			urlQuery.addQueryItem(qp.first, "");
+		else
+			urlQuery.addQueryItem(qp.first, qp.second);
+	}
 
 	res.setQuery(urlQuery);
 
@@ -541,8 +547,14 @@ void BtsApi::getFolderHosts(const QString &secret)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit getFolderHostsResult();
+		QJsonObject obj = doc.object();
+		QJsonArray arr = obj.value("hosts").toArray();
+		QStringList res;
+
+		for(const QJsonValue &val: arr)
+			res << val.toString();
+
+		emit getFolderHostsResult(res);
 	});
 }
 
@@ -554,6 +566,10 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 	   << QueryPair("hosts", hosts.join(','));
 
 	QUrl apiUrl = getApiUrl(p, "set_folder_hosts", ql);
+
+	QString queryString = apiUrl.query(QUrl::FullyEncoded);
+
+	qDebug() << apiUrl;
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
@@ -567,8 +583,14 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 		if(checkForError(doc))
 			return;
 
-		//TODO
-		emit setFolderHostsResult();
+		QJsonObject obj = doc.object();
+		QJsonArray arr = obj.value("hosts").toArray();
+		QStringList res;
+
+		for(const QJsonValue &val: arr)
+			res << val.toString();
+
+		emit setFolderHostsResult(res);
 	});
 }
 
