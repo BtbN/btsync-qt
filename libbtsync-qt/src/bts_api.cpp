@@ -11,8 +11,11 @@
 
 #include <QUrlQuery>
 #include <QPointer>
-#include <QRegExp>
+#include <QVector>
+#include <QString>
 #include <QList>
+#include <QList>
+#include <QHash>
 #include <QPair>
 #include <QUrl>
 

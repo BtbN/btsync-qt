@@ -1,10 +1,6 @@
 #pragma once
 
 #include <QObject>
-#include <QString>
-#include <QVector>
-#include <QList>
-#include <QHash>
 
 class QJsonDocument;
 class QNetworkReply;
