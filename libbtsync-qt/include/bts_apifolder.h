@@ -2,11 +2,13 @@
 
 #include <QObject>
 
+#include "bts_export_helper.h"
+
 class BtsApi;
 
 struct BtsApiFolder_private;
 
-class BtsApiFolder : public QObject
+class LIBBTS_EXPORT BtsApiFolder : public QObject
 {
 	Q_OBJECT
 
