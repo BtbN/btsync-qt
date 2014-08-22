@@ -6,3 +6,8 @@ SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
 {
 	setupUi(this);
 }
+
+void SharedFoldersWidget::setClient(BtsClient *newclient)
+{
+	client = newclient;
+}

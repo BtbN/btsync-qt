@@ -6,3 +6,8 @@ HistoryWidget::HistoryWidget(QWidget *parent)
 {
 	setupUi(this);
 }
+
+void HistoryWidget::setClient(BtsClient *newclient)
+{
+	client = newclient;
+}

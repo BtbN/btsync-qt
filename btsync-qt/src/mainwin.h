@@ -15,7 +15,6 @@ class MainWin : public QMainWindow, private Ui::MainWin
 
 	private slots:
 	void clientReady();
-	void afterTimer();
 
 	private:
 	MainWin_private *p;

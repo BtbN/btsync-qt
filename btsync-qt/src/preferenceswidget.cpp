@@ -6,3 +6,8 @@ PreferencesWidget::PreferencesWidget(QWidget *parent)
 {
 	setupUi(this);
 }
+
+void PreferencesWidget::setClient(BtsClient *newclient)
+{
+	client = newclient;
+}

@@ -6,3 +6,8 @@ TransfersWidget::TransfersWidget(QWidget *parent)
 {
 	setupUi(this);
 }
+
+void TransfersWidget::setClient(BtsClient *newclient)
+{
+	client = newclient;
+}

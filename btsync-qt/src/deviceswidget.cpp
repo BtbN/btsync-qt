@@ -6,3 +6,8 @@ DevicesWidget::DevicesWidget(QWidget *parent)
 {
 	setupUi(this);
 }
+
+void DevicesWidget::setClient(BtsClient *newclient)
+{
+	client = newclient;
+}
