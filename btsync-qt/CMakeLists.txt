@@ -13,13 +13,23 @@ set(btsync-qt_SOURCES
 	src/main.cpp
 	src/mainwin.cpp
 	src/mainwin.h
+	src/deviceswidget.cpp
+	src/deviceswidget.h
+	src/historywidget.cpp
+	src/historywidget.h
+	src/preferenceswidget.cpp
+	src/preferenceswidget.h
+	src/sharedfolderswidget.cpp
+	src/sharedfolderswidget.h
+	src/transferswidget.cpp
+	src/transferswidget.h
 	${btsync-qt_UNIX_SOURCES}
 	)
 
 set(btsync-qt_UI
 	ui/mainwin.ui
 	ui/devices.ui
-	ui/sharedFolders.ui
+	ui/sharedfolders.ui
 	ui/transfers.ui
 	ui/history.ui
 	ui/preferences.ui
@@ -34,4 +44,6 @@ target_link_libraries(btsync-qt
 	libbtsync-qt
 	qrencode
 	Qt5::Widgets)
-
+target_include_directories(btsync-qt
+	PRIVATE
+		src)

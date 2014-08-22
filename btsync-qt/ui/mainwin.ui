@@ -18,29 +18,29 @@
     <item>
      <widget class="QTabWidget" name="btTabber">
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="devicesTab">
+      <widget class="DevicesWidget" name="devicesTab">
        <attribute name="title">
         <string>Devices</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="sharedFoldersTab">
+      <widget class="SharedFoldersWidget" name="sharedFoldersTab">
        <attribute name="title">
         <string>Shared Folders</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="transfersTab">
+      <widget class="TransfersWidget" name="transfersTab">
        <attribute name="title">
         <string>Transfers</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="historyTab">
+      <widget class="HistoryWidget" name="historyTab">
        <attribute name="title">
         <string>History</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="prefsTab">
+      <widget class="PreferencesWidget" name="prefsTab">
        <attribute name="title">
         <string>Preferences</string>
        </attribute>
@@ -61,6 +61,38 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DevicesWidget</class>
+   <extends>QWidget</extends>
+   <header>deviceswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SharedFoldersWidget</class>
+   <extends>QWidget</extends>
+   <header>sharedfolderswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TransfersWidget</class>
+   <extends>QWidget</extends>
+   <header>transferswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HistoryWidget</class>
+   <extends>QWidget</extends>
+   <header>historywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PreferencesWidget</class>
+   <extends>QWidget</extends>
+   <header>preferenceswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

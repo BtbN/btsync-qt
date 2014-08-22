@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>historyWidget</class>
- <widget class="QWidget" name="historyWidget">
+ <class>HistoryWidget</class>
+ <widget class="QWidget" name="HistoryWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
