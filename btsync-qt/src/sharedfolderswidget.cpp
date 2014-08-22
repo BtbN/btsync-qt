@@ -1,3 +1,5 @@
+#include <QTimer>
+
 #include <bts_api.h>
 #include <bts_client.h>
 
@@ -10,6 +12,12 @@ SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
 	,api(nullptr)
 {
 	setupUi(this);
+
+	QTimer *updateTimer = new QTimer(this);
+	updateTimer->setInterval(10000);
+	updateTimer->start();
+
+	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateTick()));
 }
 
 void SharedFoldersWidget::setClient(BtsClient *newclient)
@@ -26,4 +34,12 @@ void SharedFoldersWidget::setClient(BtsClient *newclient)
 	client = newclient;
 
 	api = new BtsApi(client, this);
+
+
+}
+
+void SharedFoldersWidget::updateTick()
+{
+	if(!client || !client->isClientReady())
+		return;
 }
