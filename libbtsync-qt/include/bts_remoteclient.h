@@ -10,6 +10,9 @@ class LIBBTS_EXPORT BtsRemoteClient : public BtsClient
 {
 	Q_OBJECT
 
+	BtsRemoteClient& operator=(const BtsRemoteClient&) = delete;
+	BtsRemoteClient(const BtsRemoteClient&) = delete;
+
 	void notify();
 
 	public:

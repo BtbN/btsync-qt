@@ -8,6 +8,9 @@ class LIBBTS_EXPORT BtsClient : public QObject
 {
 	Q_OBJECT
 
+	BtsClient& operator=(const BtsClient&) = delete;
+	BtsClient(const BtsClient&) = delete;
+
 	public:
 	BtsClient(QObject *parent = 0);
 	virtual ~BtsClient();

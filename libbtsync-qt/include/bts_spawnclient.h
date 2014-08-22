@@ -10,6 +10,9 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 {
 	Q_OBJECT
 
+	BtsSpawnClient& operator=(const BtsSpawnClient&) = delete;
+	BtsSpawnClient(const BtsSpawnClient&) = delete;
+
 	public:
 	BtsSpawnClient(QObject *parent = 0);
 	~BtsSpawnClient();
