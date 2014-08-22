@@ -3,7 +3,7 @@
 #include <QMainWindow>
 #include "ui_mainwin.h"
 
-struct MainWin_private;
+class BtsSpawnClient;
 
 class MainWin : public QMainWindow, private Ui::MainWin
 {
@@ -11,11 +11,10 @@ class MainWin : public QMainWindow, private Ui::MainWin
 
 	public:
 	MainWin(QWidget *parent = 0);
-	~MainWin();
 
 	private slots:
 	void clientReady();
 
 	private:
-	MainWin_private *p;
+	BtsSpawnClient *spcl;
 };
