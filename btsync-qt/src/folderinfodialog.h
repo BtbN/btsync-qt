@@ -12,14 +12,18 @@ class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 
 	public:
 	FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWidget *parent = 0);
-	~FolderInfoDialog();
 
 	private slots:
 	void changed();
 	void onOkButton();
 	void onApplyButton();
+	void updateQr();
+
+	void updateSecrets(const QString &rw, const QString &ro, const QString &ec);
 
 	private:
 	BtsApiFolder *folderApi;
 	QPushButton *applyButton;
+	QString roSecret;
+	QString rwSecret;
 };

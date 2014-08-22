@@ -17,15 +17,43 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
        <string>Secrets</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <spacer name="verticalSpacer">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Full access secret:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLineEdit" name="ecSecretEdit">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QPushButton" name="copyEcSecretButton">
+         <property name="text">
+          <string>Copy</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Encrypted secret:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -37,38 +65,7 @@
          </property>
         </spacer>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Encrypted secret:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLineEdit" name="ecSecretEdit"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="newSecretButton">
-         <property name="text">
-          <string>PushButton</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QPushButton" name="copyEcSecretButton">
-         <property name="text">
-          <string>Copy</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Full access secret:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Read only secret:</string>
@@ -82,21 +79,29 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLineEdit" name="roSecretEdit"/>
+       <item row="4" column="0">
+        <widget class="QLineEdit" name="roSecretEdit">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QLineEdit" name="secretEdit"/>
+        <widget class="QLineEdit" name="secretEdit">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
-       <item row="5" column="1">
+       <item row="4" column="1">
         <widget class="QPushButton" name="copyRoSecretButton">
          <property name="text">
           <string>Copy</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
-        <spacer name="verticalSpacer_2">
+       <item row="0" column="0">
+        <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -116,7 +121,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0" colspan="4">
-        <widget class="QRCodeWidget" name="widget" native="true"/>
+        <widget class="QRCodeWidget" name="qrCodeWidget" native="true"/>
        </item>
        <item row="1" column="0">
         <spacer name="horizontalSpacer">
@@ -284,7 +289,6 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>secretEdit</tabstop>
   <tabstop>copySecretButton</tabstop>
-  <tabstop>newSecretButton</tabstop>
   <tabstop>roSecretEdit</tabstop>
   <tabstop>copyRoSecretButton</tabstop>
   <tabstop>ecSecretEdit</tabstop>

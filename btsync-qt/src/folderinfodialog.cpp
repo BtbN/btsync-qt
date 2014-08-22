@@ -21,11 +21,13 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 
 	connect(okButton, SIGNAL(clicked()), this, SLOT(onOkButton()));
 	connect(applyButton, SIGNAL(clicked()), this, SLOT(onApplyButton()));
-}
 
-FolderInfoDialog::~FolderInfoDialog()
-{
-	qDebug("Deleted");
+	connect(readOnlyRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
+	connect(fullAccessRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
+
+	connect(folderApi, SIGNAL(getSecretsResult(QString,QString,QString)), this, SLOT(updateSecrets(QString,QString,QString)));
+
+	folderApi->getSecrets(true);
 }
 
 void FolderInfoDialog::changed()
@@ -42,4 +44,28 @@ void FolderInfoDialog::onOkButton()
 void FolderInfoDialog::onApplyButton()
 {
 
+}
+
+void FolderInfoDialog::updateQr()
+{
+	QString secret = rwSecret;
+
+	if(readOnlyRadio->isChecked())
+		secret = roSecret;
+
+	QString qrString = QString("btsync://%1").arg(secret);
+
+	qrCodeWidget->setText(qrString);
+}
+
+void FolderInfoDialog::updateSecrets(const QString &rw, const QString &ro, const QString &ec)
+{
+	secretEdit->setText(rw);
+	roSecretEdit->setText(ro);
+	ecSecretEdit->setText(ec);
+
+	roSecret = ro;
+	rwSecret = rw;
+
+	updateQr();
 }
