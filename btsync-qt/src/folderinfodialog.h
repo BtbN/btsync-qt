@@ -15,6 +15,9 @@ class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 
 	private slots:
 	void changed();
+	void onCopySecret();
+	void onCopyRoSecret();
+	void onCopyEcSecret();
 	void onOkButton();
 	void onApplyButton();
 	void updateQr();

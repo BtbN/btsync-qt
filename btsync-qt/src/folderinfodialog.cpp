@@ -1,3 +1,6 @@
+#include <QApplication>
+#include <QClipboard>
+
 #include <bts_api.h>
 #include <bts_apifolder.h>
 
@@ -19,6 +22,10 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 
 	applyButton->setEnabled(false);
 
+	connect(copySecretButton, SIGNAL(clicked()), this, SLOT(onCopySecret()));
+	connect(copyRoSecretButton, SIGNAL(clicked()), this, SLOT(onCopyRoSecret()));
+	connect(copyEcSecretButton, SIGNAL(clicked()), this, SLOT(onCopyEcSecret()));
+
 	connect(okButton, SIGNAL(clicked()), this, SLOT(onOkButton()));
 	connect(applyButton, SIGNAL(clicked()), this, SLOT(onApplyButton()));
 
@@ -33,6 +40,21 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 void FolderInfoDialog::changed()
 {
 	applyButton->setEnabled(true);
+}
+
+void FolderInfoDialog::onCopySecret()
+{
+	QApplication::clipboard()->setText(secretEdit->text());
+}
+
+void FolderInfoDialog::onCopyRoSecret()
+{
+	QApplication::clipboard()->setText(roSecretEdit->text());
+}
+
+void FolderInfoDialog::onCopyEcSecret()
+{
+	QApplication::clipboard()->setText(ecSecretEdit->text());
 }
 
 void FolderInfoDialog::onOkButton()
