@@ -30,6 +30,7 @@
 #endif
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 #include <errno.h>
 #include "qrencode.h"
 #include "qrinput.h"
@@ -38,17 +39,6 @@
 
 #define isdigit(__c__) ((unsigned char)((signed char)(__c__) - '0') < 10)
 #define isalnum(__c__) (QRinput_lookAnTable(__c__) >= 0)
-
-#if !HAVE_STRDUP
-#undef strdup
-char *strdup(const char *s)
-{
-	size_t len = strlen(s) + 1;
-	void *new = malloc(len);
-	if(new == NULL) return NULL;
-	return (char *)memcpy(new, s, len);
-}
-#endif
 
 #ifdef _MSC_VER
 #define strdup _strdup
