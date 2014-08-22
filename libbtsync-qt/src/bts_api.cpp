@@ -433,7 +433,7 @@ void BtsApi::getFolderPeers(const QString &secret)
 	});
 }
 
-void BtsApi::getSecrets(bool encryption, const QString &secret)
+void BtsApi::getSecrets(bool encryption, const QString &secret, const QUuid &uuid)
 {
 	QueryList ql;
 
@@ -447,7 +447,7 @@ void BtsApi::getSecrets(bool encryption, const QString &secret)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, uuid]()
 	{
 		if(checkForError(reply))
 			return;
@@ -463,8 +463,21 @@ void BtsApi::getSecrets(bool encryption, const QString &secret)
 		QString ro = obj.value("read_only").toString();
 		QString ec = obj.value("encryption").toString();
 
-		emit getSecretsResult(rw, ro, ec);
+		if(uuid.isNull())
+			emit getSecretsResult(rw, ro, ec);
+		else
+			emit getSecretsResultUuid(uuid, rw, ro, ec);
 	});
+}
+
+void BtsApi::getSecrets(bool encryption, const QUuid &uuid)
+{
+	getSecrets(encryption, QString(), uuid);
+}
+
+void BtsApi::getSecrets(const QUuid &uuid)
+{
+	getSecrets(false, QString(), uuid);
 }
 
 void BtsApi::getSecrets(const QString &secret)

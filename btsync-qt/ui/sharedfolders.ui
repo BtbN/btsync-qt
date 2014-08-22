@@ -42,7 +42,30 @@
     </spacer>
    </item>
    <item row="0" column="0" colspan="3">
-    <widget class="QListWidget" name="sharedFolderListWidget"/>
+    <widget class="QTableWidget" name="foldersTable">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Path</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Size</string>
+      </property>
+     </column>
+    </widget>
    </item>
   </layout>
  </widget>

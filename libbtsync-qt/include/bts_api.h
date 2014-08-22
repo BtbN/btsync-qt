@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUuid>
 
 class QJsonDocument;
 class QNetworkReply;
@@ -87,7 +88,9 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void setFolderPrefs(const QString &secret, const QVariantHash &prefs);
 	void getFolderHosts(const QString &secret);
 	void setFolderHosts(const QString &secret, const QStringList &hosts);
-	void getSecrets(bool encryption = false, const QString &secret = QString());
+	void getSecrets(bool encryption = false, const QString &secret = QString(), const QUuid &uuid = QUuid());
+	void getSecrets(bool encryption, const QUuid &uuid);
+	void getSecrets(const QUuid &uuid);
 	void getSecrets(const QString &secret);
 	void getPreferences();
 	void setPreferences(const QVariantHash &prefs);
@@ -109,6 +112,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	void getFolderHostsResult(const QStringList &hosts, const QString &secret);
 	void setFolderHostsResult(const QStringList &hosts, const QString &secret);
 	void getSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
+	void getSecretsResultUuid(const QUuid &uuid, const QString &readWrite, const QString &readOnly, const QString &encryption);
 	void getPreferencesResult(const QVariantHash &prefs);
 	void setPreferencesResult(const QVariantHash &prefs);
 	void getOsNameResult(const QString &os);

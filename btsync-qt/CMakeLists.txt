@@ -23,6 +23,8 @@ set(btsync-qt_SOURCES
 	src/sharedfolderswidget.h
 	src/transferswidget.cpp
 	src/transferswidget.h
+	src/addfolderdialog.cpp
+	src/addfolderdialog.h
 	${btsync-qt_UNIX_SOURCES}
 	)
 
@@ -33,6 +35,7 @@ set(btsync-qt_UI
 	ui/transfers.ui
 	ui/history.ui
 	ui/preferences.ui
+	ui/addfolderdialog.ui
 	)
 
 qt5_wrap_ui(btsync-qt_UI_HEADERS ${btsync-qt_UI})

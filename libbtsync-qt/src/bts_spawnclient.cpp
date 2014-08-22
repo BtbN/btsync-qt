@@ -143,7 +143,7 @@ void BtsSpawnClient::exitClient(bool force)
 
 void BtsSpawnClient::startClient()
 {
-	if(isClientReady() || p->clientProc->state() == QProcess::Starting)
+	if(isClientReady() || (p->clientProc && p->clientProc->state() == QProcess::Starting))
 		return;
 
 	QDir dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
@@ -253,7 +253,7 @@ void BtsSpawnClient::randomize()
 
 void BtsSpawnClient::procStarted()
 {
-	QTimer::singleShot(2000, this, SIGNAL(clientStarted()));
+	emit clientStarted();
 	QTimer::singleShot(10000, this, SLOT(removeConfig()));
 }
 

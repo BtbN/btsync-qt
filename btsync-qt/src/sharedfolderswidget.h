@@ -1,7 +1,10 @@
 #pragma once
 
 #include <QWidget>
+#include <QVector>
 #include "ui_sharedfolders.h"
+
+#include <bts_api.h>
 
 class BtsClient;
 class BtsApi;
@@ -19,6 +22,7 @@ class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 	void addFolder();
 	void removeFolder();
 	void updateTick();
+	void updateFolders(const QVector<BtsGetFoldersResult> result);
 
 	private:
 	BtsClient *client;
