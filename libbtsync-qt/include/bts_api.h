@@ -98,7 +98,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 
 	signals:
 	void error(const QString &errorString);
-	void getFoldersResult(const QVector<BtsGetFoldersResult> &result);
+	void getFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
 	void addFolderResult();
 	void removeFolderResult(const QString &secret);
 	void getFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret);

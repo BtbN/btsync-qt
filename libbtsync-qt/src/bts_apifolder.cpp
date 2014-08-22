@@ -56,6 +56,7 @@ void BtsApiFolder::setApi(BtsApi *api)
 
 	if(!p->api.isNull())
 	{
+		connect(api, &BtsApi::getFoldersResult, this, &BtsApiFolder::parseGetFoldersResult);
 		connect(api, &BtsApi::removeFolderResult, this, &BtsApiFolder::parseRemoveFolderResult);
 		connect(api, &BtsApi::getFilesResult, this, &BtsApiFolder::parseGetFilesResult);
 		connect(api, &BtsApi::setFilePrefsResult, this, &BtsApiFolder::parseSetFilePrefsResult);
@@ -90,6 +91,13 @@ static void assertApi(BtsApiFolder_private *p)
 
 	if(p->watchedSecret.isEmpty())
 		throw BtsException("tried to perform folder action without a secret");
+}
+
+void BtsApiFolder::getFolders()
+{
+	assertApi(p);
+
+	p->api->getFolders(p->watchedSecret);
 }
 
 void BtsApiFolder::removeFolder()
@@ -155,10 +163,20 @@ void BtsApiFolder::getSecrets(bool encryption)
 	p->api->getSecrets(encryption, p->watchedSecret);
 }
 
+void BtsApiFolder::parseGetFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret)
+{
+	if(secret != p->watchedSecret)
+		return;
+
+	emit getFoldersResult(result, secret);
+}
+
 void BtsApiFolder::parseRemoveFolderResult(const QString &secret)
 {
 	if(secret != p->watchedSecret)
 		return;
+
+	emit removeFolderResult(secret);
 }
 
 void BtsApiFolder::parseGetFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret)

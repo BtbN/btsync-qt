@@ -29,6 +29,7 @@ class LIBBTS_EXPORT BtsApiFolder : public QObject
 	QString getWatchedSecret();
 
 	public slots:
+	void getFolders();
 	void removeFolder();
 	void getFiles(const QString &path = QString());
 	void setFilePrefs(const QString &path, bool download);
@@ -40,6 +41,7 @@ class LIBBTS_EXPORT BtsApiFolder : public QObject
 	void getSecrets(bool encryption = false);
 
 	signals:
+	void getFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
 	void removeFolderResult(const QString &secret);
 	void getFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
 	void setFilePrefsResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
@@ -51,6 +53,7 @@ class LIBBTS_EXPORT BtsApiFolder : public QObject
 	void getSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
 
 	private slots:
+	void parseGetFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
 	void parseRemoveFolderResult(const QString &secret);
 	void parseGetFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
 	void parseSetFilePrefsResult(const QVector<BtsGetFilesResult> &result, const QString &secret);

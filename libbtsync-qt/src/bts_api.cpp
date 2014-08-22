@@ -156,7 +156,7 @@ void BtsApi::getFolders(const QString &secret)
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
 	{
 		if(checkForError(reply))
 			return;
@@ -193,7 +193,7 @@ void BtsApi::getFolders(const QString &secret)
 			res << resObj;
 		}
 
-		emit getFoldersResult(res);
+		emit getFoldersResult(res, secret);
 	});
 }
 
