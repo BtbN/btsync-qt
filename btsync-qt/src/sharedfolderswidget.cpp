@@ -18,6 +18,9 @@ SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
 	updateTimer->start();
 
 	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateTick()));
+
+	connect(addButton, SIGNAL(clicked()), this, SLOT(addFolder()));
+	connect(removeButton, SIGNAL(clicked()), this, SLOT(removeFolder()));
 }
 
 void SharedFoldersWidget::setClient(BtsClient *newclient)
@@ -35,11 +38,23 @@ void SharedFoldersWidget::setClient(BtsClient *newclient)
 
 	api = new BtsApi(client, this);
 
+	//connect(api, SIGNAL(getFoldersResult(QVector<BtsGetFoldersResult>))
+}
+
+void SharedFoldersWidget::addFolder()
+{
+
+}
+
+void SharedFoldersWidget::removeFolder()
+{
 
 }
 
 void SharedFoldersWidget::updateTick()
 {
-	if(!client || !client->isClientReady())
+	if(!api || !client || !client->isClientReady())
 		return;
+
+	api->getFolders();
 }

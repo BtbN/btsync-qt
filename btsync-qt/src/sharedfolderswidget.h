@@ -16,6 +16,8 @@ class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 	void setClient(BtsClient *newclient);
 
 	private slots:
+	void addFolder();
+	void removeFolder();
 	void updateTick();
 
 	private:

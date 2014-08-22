@@ -143,7 +143,7 @@ void BtsSpawnClient::exitClient(bool force)
 
 void BtsSpawnClient::startClient()
 {
-	if(isClientReady())
+	if(isClientReady() || p->clientProc->state() == QProcess::Starting)
 		return;
 
 	QDir dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
