@@ -253,8 +253,7 @@ void BtsSpawnClient::randomize()
 
 void BtsSpawnClient::procStarted()
 {
-	emit clientStarted();
-
+	QTimer::singleShot(2000, this, SIGNAL(clientStarted()));
 	QTimer::singleShot(10000, this, SLOT(removeConfig()));
 }
 

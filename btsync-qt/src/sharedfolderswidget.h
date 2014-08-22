@@ -4,6 +4,7 @@
 #include "ui_sharedfolders.h"
 
 class BtsClient;
+class BtsApi;
 
 class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 {
@@ -16,4 +17,5 @@ class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 
 	private:
 	BtsClient *client;
+	BtsApi *api;
 };
