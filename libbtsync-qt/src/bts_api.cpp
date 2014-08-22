@@ -88,6 +88,8 @@ bool BtsApi::checkForError(QNetworkReply *reply)
 
 bool BtsApi::checkForError(const QJsonDocument &doc)
 {
+	qDebug() << doc;
+
 	QJsonObject obj = doc.object();
 
 	int errorCode = obj.value("error").toInt(0);
@@ -139,6 +141,8 @@ static QUrl getApiUrl(BtsApi_private *p, const QString &method, const QueryList 
 	}
 
 	res.setQuery(urlQuery);
+
+	qDebug() << res;
 
 	return res;
 }

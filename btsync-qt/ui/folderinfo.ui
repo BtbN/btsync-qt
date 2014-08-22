@@ -175,6 +175,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="2" column="0">
         <widget class="QCheckBox" name="lanCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Search LAN</string>
          </property>
@@ -182,6 +185,9 @@
        </item>
        <item row="3" column="0">
         <widget class="QCheckBox" name="dhtCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Search DHT Network</string>
          </property>
@@ -189,6 +195,9 @@
        </item>
        <item row="0" column="0">
         <widget class="QCheckBox" name="relayCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Use relay server when required</string>
          </property>
@@ -196,6 +205,9 @@
        </item>
        <item row="4" column="0">
         <widget class="QCheckBox" name="archiveCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Store deleted files in SyncArchive</string>
          </property>
@@ -203,6 +215,9 @@
        </item>
        <item row="6" column="0">
         <widget class="QCheckBox" name="predefHostsCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Use predefined hosts</string>
          </property>
@@ -210,19 +225,33 @@
        </item>
        <item row="1" column="0">
         <widget class="QCheckBox" name="trackerCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Use tracker server</string>
          </property>
         </widget>
        </item>
        <item row="7" column="0" rowspan="3">
-        <widget class="QListWidget" name="hostsList"/>
+        <widget class="QListWidget" name="hostsList">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="7" column="1" colspan="2">
-        <widget class="QLineEdit" name="newHostEdit"/>
+        <widget class="QLineEdit" name="newHostEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="9" column="1">
         <widget class="QPushButton" name="removeHostButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Remove</string>
          </property>
@@ -230,6 +259,9 @@
        </item>
        <item row="8" column="1">
         <widget class="QPushButton" name="addHostButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Add</string>
          </property>

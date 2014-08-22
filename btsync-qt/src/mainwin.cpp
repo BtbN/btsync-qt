@@ -1,5 +1,7 @@
 #include <QtDebug>
 
+#include <QStatusBar>
+#include <QLabel>
 #include <QTimer>
 
 #include <bts_spawnclient.h>
@@ -21,12 +23,29 @@ MainWin::MainWin(QWidget *parent)
 	sharedFoldersTab->setClient(spcl);
 	transfersTab->setClient(spcl);
 
+	speedLabel = new QLabel(this);
+	statusBar()->addPermanentWidget(speedLabel);
+
+	api = new BtsApi(spcl, this);
+
 	connect(spcl, SIGNAL(clientStarted()), this, SLOT(clientReady()));
+
+	speedTimer = new QTimer(this);
+	speedTimer->setInterval(1000);
+
+	connect(speedTimer, SIGNAL(timeout()), api, SLOT(getSpeed()));
+	connect(api, SIGNAL(getSpeedResult(qint64,qint64)), this, SLOT(updateSpeed(qint64,qint64)));
 
 	QTimer::singleShot(0, spcl, SLOT(startClient()));
 }
 
 void MainWin::clientReady()
 {
-	qDebug() << "Client ready";
+	//speedTimer->start();
+	api->getSpeed();
+}
+
+void MainWin::updateSpeed(qint64 down, qint64 up)
+{
+	speedLabel->setText(tr("%1 kB/s down | %2 kB/s up").arg(down / 1024.0).arg(up / 1024.0));
 }

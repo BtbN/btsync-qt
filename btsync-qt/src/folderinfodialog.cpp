@@ -9,6 +9,7 @@
 
 FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWidget *parent)
 	:QDialog(parent)
+	,blockChanges(false)
 {
 	setupUi(this);
 
@@ -32,14 +33,25 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 	connect(readOnlyRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
 	connect(fullAccessRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
 
+	connect(relayCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(trackerCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(lanCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(dhtCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(archiveCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(predefHostsCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+
+	connect(addHostButton, SIGNAL(clicked()), this, SLOT(onAddHost()));
+	connect(removeHostButton, SIGNAL(clicked()), this, SLOT(onDelHost()));
+
 	connect(folderApi, SIGNAL(getSecretsResult(QString,QString,QString)), this, SLOT(updateSecrets(QString,QString,QString)));
+	connect(folderApi, SIGNAL(getFolderHostsResult(QStringList,QString)), this, SLOT(updateHosts(QStringList)));
+	connect(folderApi, SIGNAL(setFolderHostsResult(QStringList,QString)), this, SLOT(updateHosts(QStringList)));
+	connect(folderApi, SIGNAL(getFolderPrefsResult(QVariantHash,QString)), this, SLOT(updatePrefs(QVariantHash)));
+	connect(folderApi, SIGNAL(setFolderPrefsResult(QVariantHash,QString)), this, SLOT(updatePrefs(QVariantHash)));
 
 	folderApi->getSecrets(true);
-}
-
-void FolderInfoDialog::changed()
-{
-	applyButton->setEnabled(true);
+	folderApi->getFolderHosts();
+	folderApi->getFolderPrefs();
 }
 
 void FolderInfoDialog::onCopySecret()
@@ -59,13 +71,33 @@ void FolderInfoDialog::onCopyEcSecret()
 
 void FolderInfoDialog::onOkButton()
 {
-	onApplyButton();
+	if(applyButton->isEnabled())
+		onApplyButton();
+
 	accept();
 }
 
 void FolderInfoDialog::onApplyButton()
 {
+	QVariantHash prefs;
+	prefs["use_relay_server"] = relayCheck->isChecked() ? 1 : 0;
+	prefs["use_tracker"] = trackerCheck->isChecked() ? 1 : 0;
+	prefs["search_lan"] = lanCheck->isChecked() ? 1 : 0;
+	prefs["use_dht"] = dhtCheck->isChecked() ? 1 : 0;
+	prefs["use_sync_trash"] = archiveCheck->isChecked() ? 1 : 0;
+	prefs["use_hosts"] = predefHostsCheck->isChecked() ? 1 : 0;
 
+	folderApi->setFolderPrefs(prefs);
+
+	sendCurHosts();
+}
+
+void FolderInfoDialog::changed()
+{
+	if(blockChanges)
+		return;
+
+	applyButton->setEnabled(true);
 }
 
 void FolderInfoDialog::updateQr()
@@ -75,9 +107,42 @@ void FolderInfoDialog::updateQr()
 	if(readOnlyRadio->isChecked())
 		secret = roSecret;
 
-	QString qrString = QString("btsync://%1").arg(secret);
+	QString qrString = QString("btsync://%1?n=NOT_YET_IMPLEMENTED__TODO").arg(secret); // TODO
 
 	qrCodeWidget->setText(qrString);
+}
+
+void FolderInfoDialog::onAddHost()
+{
+	if(newHostEdit->text().isEmpty())
+		return;
+
+	hostsList->addItem(newHostEdit->text());
+	newHostEdit->clear();
+
+	changed();
+}
+
+void FolderInfoDialog::onDelHost()
+{
+	for(QListWidgetItem *item: hostsList->selectedItems())
+	{
+		delete item;
+	}
+
+	changed();
+}
+
+void FolderInfoDialog::sendCurHosts()
+{
+	QStringList hosts;
+
+	for(int i = 0; i < hostsList->count(); ++i)
+	{
+		hosts << hostsList->item(i)->text();
+	}
+
+	folderApi->setFolderHosts(hosts);
 }
 
 void FolderInfoDialog::updateSecrets(const QString &rw, const QString &ro, const QString &ec)
@@ -90,4 +155,36 @@ void FolderInfoDialog::updateSecrets(const QString &rw, const QString &ro, const
 	rwSecret = rw;
 
 	updateQr();
+}
+
+void FolderInfoDialog::updateHosts(const QStringList &hosts)
+{
+	hostsList->clear();
+	hostsList->addItems(hosts);
+	hostsList->setEnabled(true);
+	addHostButton->setEnabled(true);
+	removeHostButton->setEnabled(true);
+	newHostEdit->setEnabled(true);
+}
+
+void FolderInfoDialog::updatePrefs(const QVariantHash &prefs)
+{
+	relayCheck->setEnabled(true);
+	trackerCheck->setEnabled(true);
+	lanCheck->setEnabled(true);
+	dhtCheck->setEnabled(true);
+	archiveCheck->setEnabled(true);
+	predefHostsCheck->setEnabled(true);
+	applyButton->setEnabled(false);
+
+	blockChanges = true;
+
+	relayCheck->setChecked(prefs.value("use_relay_server").toInt() == 1);
+	trackerCheck->setChecked(prefs.value("use_tracker").toInt() == 1);
+	lanCheck->setChecked(prefs.value("search_lan").toInt() == 1);
+	dhtCheck->setChecked(prefs.value("use_dht").toInt() == 1);
+	archiveCheck->setChecked(prefs.value("use_sync_trash").toInt() == 1);
+	predefHostsCheck->setChecked(prefs.value("use_hosts").toInt() == 1);
+
+	blockChanges = false;
 }

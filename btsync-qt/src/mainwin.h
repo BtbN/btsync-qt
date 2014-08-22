@@ -4,6 +4,9 @@
 #include "ui_mainwin.h"
 
 class BtsSpawnClient;
+class BtsApi;
+class QLabel;
+class QTimer;
 
 class MainWin : public QMainWindow, private Ui::MainWin
 {
@@ -14,7 +17,12 @@ class MainWin : public QMainWindow, private Ui::MainWin
 
 	private slots:
 	void clientReady();
+	void updateSpeed(qint64 down, qint64 up);
 
 	private:
 	BtsSpawnClient *spcl;
+	QTimer *speedTimer;
+	QLabel *speedLabel;
+	BtsApi *api;
+
 };
