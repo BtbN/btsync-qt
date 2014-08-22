@@ -88,8 +88,6 @@ bool BtsApi::checkForError(QNetworkReply *reply)
 
 bool BtsApi::checkForError(const QJsonDocument &doc)
 {
-	qDebug() << doc;
-
 	QJsonObject obj = doc.object();
 
 	int errorCode = obj.value("error").toInt(0);
@@ -589,8 +587,6 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 	QUrl apiUrl = getApiUrl(p, "set_folder_hosts", ql);
 
 	QString queryString = apiUrl.query(QUrl::FullyEncoded);
-
-	qDebug() << apiUrl;
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
 

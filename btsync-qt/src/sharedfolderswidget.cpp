@@ -11,6 +11,7 @@
 
 #include "sharedfolderswidget.h"
 #include "addfolderdialog.h"
+#include "folderinfodialog.h"
 
 
 SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
@@ -30,6 +31,7 @@ SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
 
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addFolder()));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(removeFolder()));
+	connect(infoButton, SIGNAL(clicked()), this, SLOT(folderInfo()));
 }
 
 void SharedFoldersWidget::setClient(BtsClient *newclient)
@@ -74,19 +76,21 @@ void SharedFoldersWidget::addFolder()
 	api->addFolder(dialog.getPath(), dialog.getSecret());
 }
 
-static int getSelectedRow(QTableWidget *tbl)
+static QTableWidgetItem *getSelectedRow(QTableWidget *tbl)
 {
 	QList<QTableWidgetSelectionRange> selections = tbl->selectedRanges();
 
 	if(selections.size() != 1)
-		return -1;
+		return 0;
 
 	QTableWidgetSelectionRange selection = selections.first();
 
 	if(selection.rowCount() != 1)
-		return -1;
+		return 0;
 
-	return selection.topRow();
+	int row = selection.topRow();
+
+	return tbl->item(row, 0);
 }
 
 void SharedFoldersWidget::removeFolder()
@@ -94,24 +98,46 @@ void SharedFoldersWidget::removeFolder()
 	if(!api || !client)
 		return;
 
-	int row = getSelectedRow(foldersTable);
+	QTableWidgetItem *item = getSelectedRow(foldersTable);
 
-	if(row < 0)
+	if(!item)
 		return;
-
-	QTableWidgetItem *item = foldersTable->item(row, 0);
 
 	QString selectedFolder = item->text();
 	QString selectedSecret = item->data(Qt::UserRole).toString();
 
 	auto result = QMessageBox::question(this,
-	                      tr("Remove shared folder?"),
-	                      tr("Are you sure that you want to remove the shared folder \"%1\"?").arg(selectedFolder));
+			tr("Remove shared folder?"),
+			tr("Are you sure that you want to remove the shared folder \"%1\"?").arg(selectedFolder));
 
 	if(result != QMessageBox::Yes)
 		return;
 
 	api->removeFolder(selectedSecret);
+}
+
+void SharedFoldersWidget::folderInfo()
+{
+	if(!api || !client || !client->isClientReady())
+		return;
+
+	QTableWidgetItem *item = getSelectedRow(foldersTable);
+
+	if(!item)
+		return;
+
+	QString selectedSecret = item->data(Qt::UserRole).toString();
+
+	if(selectedSecret.isEmpty())
+	{
+		qCritical("No secret associated with row!");
+		return;
+	}
+
+	FolderInfoDialog *dialog = new FolderInfoDialog(api, selectedSecret, this);
+	dialog->setModal(true);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->show();
 }
 
 void SharedFoldersWidget::updateTick()
@@ -153,7 +179,12 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 		pathItem->setData(Qt::UserRole, folder.secret);
 		sizeItem->setData(Qt::UserRole, folder.secret);
 
-		pathItem->setText(folder.dir);
+		QString dir = folder.dir;
+
+		if(dir.startsWith("\\\\?\\"))
+			dir = dir.mid(4);
+
+		pathItem->setText(dir);
 		sizeItem->setText(
 			tr("%1 in %2")
 				.arg(tr("%Ln byte(s)", "", folder.size))

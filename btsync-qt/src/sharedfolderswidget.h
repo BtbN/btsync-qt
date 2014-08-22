@@ -21,6 +21,7 @@ class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 	private slots:
 	void addFolder();
 	void removeFolder();
+	void folderInfo();
 	void updateTick();
 	void updateFolders(const QVector<BtsGetFoldersResult> result);
 

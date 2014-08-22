@@ -20,14 +20,14 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="DevicesWidget" name="devicesTab">
-       <attribute name="title">
-        <string>Devices</string>
-       </attribute>
-      </widget>
       <widget class="SharedFoldersWidget" name="sharedFoldersTab">
        <attribute name="title">
         <string>Shared Folders</string>
+       </attribute>
+      </widget>
+      <widget class="DevicesWidget" name="devicesTab">
+       <attribute name="title">
+        <string>Devices</string>
        </attribute>
       </widget>
       <widget class="TransfersWidget" name="transfersTab">
