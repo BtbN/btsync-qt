@@ -47,26 +47,7 @@ BtsApiFolder::~BtsApiFolder()
 
 void BtsApiFolder::setApi(BtsApi *api)
 {
-	if(!p->api.isNull())
-	{
-		p->api->disconnect(this);
-	}
-
 	p->api = api;
-
-	if(!p->api.isNull())
-	{
-		connect(api, &BtsApi::getFoldersResult, this, &BtsApiFolder::parseGetFoldersResult);
-		connect(api, &BtsApi::removeFolderResult, this, &BtsApiFolder::parseRemoveFolderResult);
-		connect(api, &BtsApi::getFilesResult, this, &BtsApiFolder::parseGetFilesResult);
-		connect(api, &BtsApi::setFilePrefsResult, this, &BtsApiFolder::parseSetFilePrefsResult);
-		connect(api, &BtsApi::getFolderPeersResult, this, &BtsApiFolder::parseGetFolderPeersResult);
-		connect(api, &BtsApi::getFolderPrefsResult, this, &BtsApiFolder::parseGetFolderPrefsResult);
-		connect(api, &BtsApi::setFolderPrefsResult, this, &BtsApiFolder::parseSetFolderPrefsResult);
-		connect(api, &BtsApi::getFolderHostsResult, this, &BtsApiFolder::parseGetFolderHostsResult);
-		connect(api, &BtsApi::setFolderHostsResult, this, &BtsApiFolder::parseSetFolderHostsResult);
-		connect(api, &BtsApi::getSecretsResult, this, &BtsApiFolder::parseGetSecretsResult);
-	}
 }
 
 BtsApi *BtsApiFolder::getApi()
@@ -93,152 +74,112 @@ static void assertApi(BtsApiFolder_private *p)
 		throw BtsException("tried to perform folder action without a secret");
 }
 
-void BtsApiFolder::getFolders()
+BtsApiNotifier *BtsApiFolder::getFolders()
 {
 	assertApi(p);
 
-	p->api->getFolders(p->watchedSecret);
+	BtsApiNotifier *res = p->api->getFolders(p->watchedSecret);
+
+	connect(res, &BtsApiNotifier::getFoldersResult, this, &BtsApiFolder::getFoldersResult);
+
+	return res;
 }
 
-void BtsApiFolder::removeFolder()
+BtsApiNotifier *BtsApiFolder::removeFolder()
 {
 	assertApi(p);
 
-	p->api->removeFolder(p->watchedSecret);
+	BtsApiNotifier *res = p->api->removeFolder(p->watchedSecret);
+
+	connect(res, &BtsApiNotifier::removeFolderResult, this, &BtsApiFolder::removeFolderResult);
+
+	return res;
 }
 
-void BtsApiFolder::getFiles(const QString &path)
+BtsApiNotifier *BtsApiFolder::getFiles(const QString &path)
 {
 	assertApi(p);
 
-	p->api->getFiles(p->watchedSecret, path);
+	BtsApiNotifier *res = p->api->getFiles(p->watchedSecret, path);
+
+	connect(res, &BtsApiNotifier::getFilesResult, this, &BtsApiFolder::getFilesResult);
+
+	return res;
 }
 
-void BtsApiFolder::setFilePrefs(const QString &path, bool download)
+BtsApiNotifier *BtsApiFolder::setFilePrefs(const QString &path, bool download)
 {
 	assertApi(p);
 
-	p->api->setFilePrefs(p->watchedSecret, path, download);
+	BtsApiNotifier *res = p->api->setFilePrefs(p->watchedSecret, path, download);
+
+	connect(res, &BtsApiNotifier::setFilePrefsResult, this, &BtsApiFolder::setFilePrefsResult);
+
+	return res;
 }
 
-void BtsApiFolder::getFolderPeers()
+BtsApiNotifier *BtsApiFolder::getFolderPeers()
 {
 	assertApi(p);
 
-	p->api->getFolderPeers(p->watchedSecret);
+	BtsApiNotifier *res = p->api->getFolderPeers(p->watchedSecret);
+
+	connect(res, &BtsApiNotifier::getFolderPeersResult, this, &BtsApiFolder::getFolderPeersResult);
+
+	return res;
 }
 
-void BtsApiFolder::getFolderPrefs()
+BtsApiNotifier *BtsApiFolder::getFolderPrefs()
 {
 	assertApi(p);
 
-	p->api->getFolderPrefs(p->watchedSecret);
+	BtsApiNotifier *res = p->api->getFolderPrefs(p->watchedSecret);
+
+	connect(res, &BtsApiNotifier::getFolderPrefsResult, this, &BtsApiFolder::getFolderPrefsResult);
+
+	return res;
 }
 
-void BtsApiFolder::setFolderPrefs(const QVariantHash &prefs)
+BtsApiNotifier *BtsApiFolder::setFolderPrefs(const QVariantHash &prefs)
 {
 	assertApi(p);
 
-	p->api->setFolderPrefs(p->watchedSecret, prefs);
+	BtsApiNotifier *res = p->api->setFolderPrefs(p->watchedSecret, prefs);
+
+	connect(res, &BtsApiNotifier::setFolderPrefsResult, this, &BtsApiFolder::setFolderPrefsResult);
+
+	return res;
 }
 
-void BtsApiFolder::getFolderHosts()
+BtsApiNotifier *BtsApiFolder::getFolderHosts()
 {
 	assertApi(p);
 
-	p->api->getFolderHosts(p->watchedSecret);
+	BtsApiNotifier *res = p->api->getFolderHosts(p->watchedSecret);
+
+	connect(res, &BtsApiNotifier::getFolderHostsResult, this, &BtsApiFolder::getFolderHostsResult);
+
+	return res;
 }
 
-void BtsApiFolder::setFolderHosts(const QStringList &hosts)
+BtsApiNotifier *BtsApiFolder::setFolderHosts(const QStringList &hosts)
 {
 	assertApi(p);
 
-	p->api->setFolderHosts(p->watchedSecret, hosts);
+	BtsApiNotifier *res = p->api->setFolderHosts(p->watchedSecret, hosts);
+
+	connect(res, &BtsApiNotifier::setFolderHostsResult, this, &BtsApiFolder::setFolderHostsResult);
+
+	return res;
 }
 
-void BtsApiFolder::getSecrets(bool encryption)
+BtsApiNotifier *BtsApiFolder::getSecrets(bool encryption)
 {
 	assertApi(p);
 
-	p->api->getSecrets(encryption, p->watchedSecret);
-}
+	BtsApiNotifier *res = p->api->getSecrets(encryption, p->watchedSecret);
 
-void BtsApiFolder::parseGetFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
+	connect(res, &BtsApiNotifier::getSecretsResult, this, &BtsApiFolder::getSecretsResult);
 
-	emit getFoldersResult(result, secret);
-}
-
-void BtsApiFolder::parseRemoveFolderResult(const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit removeFolderResult(secret);
-}
-
-void BtsApiFolder::parseGetFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit getFilesResult(result, secret);
-}
-
-void BtsApiFolder::parseSetFilePrefsResult(const QVector<BtsGetFilesResult> &result, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit setFilePrefsResult(result, secret);
-}
-
-void BtsApiFolder::parseGetFolderPeersResult(const QVector<BtsGetFolderPeersResult> &result, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit getFolderPeersResult(result, secret);
-}
-
-void BtsApiFolder::parseGetFolderPrefsResult(const QVariantHash &prefs, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit getFolderPrefsResult(prefs, secret);
-}
-
-void BtsApiFolder::parseSetFolderPrefsResult(const QVariantHash &prefs, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit setFolderPrefsResult(prefs, secret);
-}
-
-void BtsApiFolder::parseGetFolderHostsResult(const QStringList &hosts, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit getFolderHostsResult(hosts, secret);
-}
-
-void BtsApiFolder::parseSetFolderHostsResult(const QStringList &hosts, const QString &secret)
-{
-	if(secret != p->watchedSecret)
-		return;
-
-	emit setFolderHostsResult(hosts, secret);
-}
-
-void BtsApiFolder::parseGetSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption)
-{
-	if(readWrite != p->watchedSecret)
-		return;
-
-	emit getSecretsResult(readWrite, readOnly, encryption);
+	return res;
 }

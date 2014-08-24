@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QVector>
 #include <QUuid>
 
 class QJsonDocument;
@@ -23,6 +24,8 @@ struct LIBBTS_EXPORT BtsGetFoldersResult
 	int indexing;
 };
 
+Q_DECLARE_METATYPE(BtsGetFoldersResult)
+
 struct LIBBTS_EXPORT BtsGetFolderPeersResult
 {
 	QString id;
@@ -32,6 +35,8 @@ struct LIBBTS_EXPORT BtsGetFolderPeersResult
 	qint64 download;
 	qint64 upload;
 };
+
+Q_DECLARE_METATYPE(BtsGetFolderPeersResult)
 
 enum BtsGetFilesResultType
 {
@@ -53,6 +58,40 @@ struct LIBBTS_EXPORT BtsGetFilesResult
 	int have_pieces;
 	qint64 size;
 	bool download;
+};
+
+Q_DECLARE_METATYPE(BtsGetFilesResult)
+
+class LIBBTS_EXPORT BtsApiNotifier : public QObject
+{
+	Q_OBJECT
+
+	friend class BtsApi;
+
+	BtsApiNotifier& operator=(const BtsApiNotifier&) = delete;
+	BtsApiNotifier(const BtsApiNotifier&) = delete;
+
+	BtsApiNotifier(QObject *parent = 0);
+
+	signals:
+	void getFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
+	void addFolderResult();
+	void removeFolderResult(const QString &secret);
+	void getFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
+	void setFilePrefsResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
+	void getFolderPeersResult(const QVector<BtsGetFolderPeersResult> &result, const QString &secret);
+	void getFolderPrefsResult(const QVariantHash &prefs, const QString &secret);
+	void setFolderPrefsResult(const QVariantHash &prefs, const QString &secret);
+	void getFolderHostsResult(const QStringList &hosts, const QString &secret);
+	void setFolderHostsResult(const QStringList &hosts, const QString &secret);
+	void getSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
+	void getSecretsResultUuid(const QUuid &uuid, const QString &readWrite, const QString &readOnly, const QString &encryption);
+	void getPreferencesResult(const QVariantHash &prefs);
+	void setPreferencesResult(const QVariantHash &prefs);
+	void getOsNameResult(const QString &os);
+	void getVersionResult(const QString &version);
+	void getSpeedResult(qint64 down, qint64 up);
+	void shutdownResult();
 };
 
 class LIBBTS_EXPORT BtsApi : public QObject
@@ -77,27 +116,27 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	bool checkForError(const QJsonDocument &doc);
 
 	public slots:
-	void getFolders(const QString &secret = QString());
-	void addFolder(const QString &dir, bool selective_sync = false, const QString &secret = QString());
-	void addFolder(const QString &dir, const QString &secret);
-	void removeFolder(const QString &secret);
-	void getFiles(const QString &secret, const QString &path = QString());
-	void setFilePrefs(const QString &secret, const QString &path, bool download);
-	void getFolderPeers(const QString &secret);
-	void getFolderPrefs(const QString &secret);
-	void setFolderPrefs(const QString &secret, const QVariantHash &prefs);
-	void getFolderHosts(const QString &secret);
-	void setFolderHosts(const QString &secret, const QStringList &hosts);
-	void getSecrets(bool encryption = false, const QString &secret = QString(), const QUuid &uuid = QUuid());
-	void getSecrets(bool encryption, const QUuid &uuid);
-	void getSecrets(const QUuid &uuid);
-	void getSecrets(const QString &secret);
-	void getPreferences();
-	void setPreferences(const QVariantHash &prefs);
-	void getOsName();
-	void getVersion();
-	void getSpeed();
-	void shutdown();
+	BtsApiNotifier *getFolders(const QString &secret = QString());
+	BtsApiNotifier *addFolder(const QString &dir, bool selective_sync = false, const QString &secret = QString());
+	BtsApiNotifier *addFolder(const QString &dir, const QString &secret);
+	BtsApiNotifier *removeFolder(const QString &secret);
+	BtsApiNotifier *getFiles(const QString &secret, const QString &path = QString());
+	BtsApiNotifier *setFilePrefs(const QString &secret, const QString &path, bool download);
+	BtsApiNotifier *getFolderPeers(const QString &secret);
+	BtsApiNotifier *getFolderPrefs(const QString &secret);
+	BtsApiNotifier *setFolderPrefs(const QString &secret, const QVariantHash &prefs);
+	BtsApiNotifier *getFolderHosts(const QString &secret);
+	BtsApiNotifier *setFolderHosts(const QString &secret, const QStringList &hosts);
+	BtsApiNotifier *getSecrets(bool encryption = false, const QString &secret = QString(), const QUuid &uuid = QUuid());
+	BtsApiNotifier *getSecrets(bool encryption, const QUuid &uuid);
+	BtsApiNotifier *getSecrets(const QUuid &uuid);
+	BtsApiNotifier *getSecrets(const QString &secret);
+	BtsApiNotifier *getPreferences();
+	BtsApiNotifier *setPreferences(const QVariantHash &prefs);
+	BtsApiNotifier *getOsName();
+	BtsApiNotifier *getVersion();
+	BtsApiNotifier *getSpeed();
+	BtsApiNotifier *shutdown();
 
 	signals:
 	void error(const QString &errorString);
@@ -123,3 +162,7 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	private:
 	BtsApi_private *p;
 };
+
+Q_DECLARE_METATYPE(QVector<BtsGetFoldersResult>)
+Q_DECLARE_METATYPE(QVector<BtsGetFilesResult>)
+Q_DECLARE_METATYPE(QVector<BtsGetFolderPeersResult>)

@@ -2,9 +2,7 @@
 
 #include <QObject>
 
-#include "bts_export_helper.h"
-
-class BtsApi;
+#include "bts_api.h"
 
 struct BtsApiFolder_private;
 
@@ -29,16 +27,16 @@ class LIBBTS_EXPORT BtsApiFolder : public QObject
 	QString getWatchedSecret();
 
 	public slots:
-	void getFolders();
-	void removeFolder();
-	void getFiles(const QString &path = QString());
-	void setFilePrefs(const QString &path, bool download);
-	void getFolderPeers();
-	void getFolderPrefs();
-	void setFolderPrefs(const QVariantHash &prefs);
-	void getFolderHosts();
-	void setFolderHosts(const QStringList &hosts);
-	void getSecrets(bool encryption = false);
+	BtsApiNotifier *getFolders();
+	BtsApiNotifier *removeFolder();
+	BtsApiNotifier *getFiles(const QString &path = QString());
+	BtsApiNotifier *setFilePrefs(const QString &path, bool download);
+	BtsApiNotifier *getFolderPeers();
+	BtsApiNotifier *getFolderPrefs();
+	BtsApiNotifier *setFolderPrefs(const QVariantHash &prefs);
+	BtsApiNotifier *getFolderHosts();
+	BtsApiNotifier *setFolderHosts(const QStringList &hosts);
+	BtsApiNotifier *getSecrets(bool encryption = false);
 
 	signals:
 	void getFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
@@ -51,18 +49,6 @@ class LIBBTS_EXPORT BtsApiFolder : public QObject
 	void getFolderHostsResult(const QStringList &hosts, const QString &secret);
 	void setFolderHostsResult(const QStringList &hosts, const QString &secret);
 	void getSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
-
-	private slots:
-	void parseGetFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
-	void parseRemoveFolderResult(const QString &secret);
-	void parseGetFilesResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
-	void parseSetFilePrefsResult(const QVector<BtsGetFilesResult> &result, const QString &secret);
-	void parseGetFolderPeersResult(const QVector<BtsGetFolderPeersResult> &result, const QString &secret);
-	void parseGetFolderPrefsResult(const QVariantHash &prefs, const QString &secret);
-	void parseSetFolderPrefsResult(const QVariantHash &prefs, const QString &secret);
-	void parseGetFolderHostsResult(const QStringList &hosts, const QString &secret);
-	void parseSetFolderHostsResult(const QStringList &hosts, const QString &secret);
-	void parseGetSecretsResult(const QString &readWrite, const QString &readOnly, const QString &encryption);
 
 	private:
 	BtsApiFolder_private *p;

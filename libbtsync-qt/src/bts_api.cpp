@@ -147,7 +147,7 @@ static QUrl getApiUrl(BtsApi_private *p, const QString &method, const QueryList 
 	return res;
 }
 
-void BtsApi::getFolders(const QString &secret)
+BtsApiNotifier *BtsApi::getFolders(const QString &secret)
 {
 	QueryList ql;
 
@@ -157,9 +157,12 @@ void BtsApi::getFolders(const QString &secret)
 	QUrl apiUrl = getApiUrl(p, "get_folders", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -196,10 +199,13 @@ void BtsApi::getFolders(const QString &secret)
 		}
 
 		emit getFoldersResult(res, secret);
+		emit notifier->getFoldersResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::addFolder(const QString &dir, bool selective_sync, const QString &secret)
+BtsApiNotifier *BtsApi::addFolder(const QString &dir, bool selective_sync, const QString &secret)
 {
 	QueryList ql;
 
@@ -214,9 +220,12 @@ void BtsApi::addFolder(const QString &dir, bool selective_sync, const QString &s
 	QUrl apiUrl = getApiUrl(p, "add_folder", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -226,15 +235,18 @@ void BtsApi::addFolder(const QString &dir, bool selective_sync, const QString &s
 			return;
 
 		emit addFolderResult();
+		emit notifier->addFolderResult();
 	});
+
+	return notifier;
 }
 
-void BtsApi::addFolder(const QString &dir, const QString &secret)
+BtsApiNotifier *BtsApi::addFolder(const QString &dir, const QString &secret)
 {
-	addFolder(dir, false, secret);
+	return addFolder(dir, false, secret);
 }
 
-void BtsApi::removeFolder(const QString &secret)
+BtsApiNotifier *BtsApi::removeFolder(const QString &secret)
 {
 	QueryList ql;
 
@@ -243,9 +255,12 @@ void BtsApi::removeFolder(const QString &secret)
 	QUrl apiUrl = getApiUrl(p, "remove_folder", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -255,7 +270,10 @@ void BtsApi::removeFolder(const QString &secret)
 			return;
 
 		emit removeFolderResult(secret);
+		emit notifier->removeFolderResult(secret);
 	});
+
+	return notifier;
 }
 
 static void parseGetFilesResult(QJsonObject &fileObj, BtsGetFilesResult &resObj)
@@ -290,7 +308,7 @@ static void parseGetFilesResult(QJsonObject &fileObj, BtsGetFilesResult &resObj)
 	}
 }
 
-void BtsApi::getFiles(const QString &secret, const QString &path)
+BtsApiNotifier *BtsApi::getFiles(const QString &secret, const QString &path)
 {
 	QueryList ql;
 
@@ -302,9 +320,12 @@ void BtsApi::getFiles(const QString &secret, const QString &path)
 	QUrl apiUrl = getApiUrl(p, "get_files", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -335,10 +356,13 @@ void BtsApi::getFiles(const QString &secret, const QString &path)
 		}
 
 		emit getFilesResult(res, secret);
+		emit notifier->getFilesResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::setFilePrefs(const QString &secret, const QString &path, bool download)
+BtsApiNotifier *BtsApi::setFilePrefs(const QString &secret, const QString &path, bool download)
 {
 	QueryList ql;
 
@@ -349,9 +373,12 @@ void BtsApi::setFilePrefs(const QString &secret, const QString &path, bool downl
 	QUrl apiUrl = getApiUrl(p, "set_file_prefs", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -382,10 +409,13 @@ void BtsApi::setFilePrefs(const QString &secret, const QString &path, bool downl
 		}
 
 		emit setFilePrefsResult(res, secret);
+		emit notifier->setFilePrefsResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::getFolderPeers(const QString &secret)
+BtsApiNotifier *BtsApi::getFolderPeers(const QString &secret)
 {
 	QueryList ql;
 
@@ -394,9 +424,12 @@ void BtsApi::getFolderPeers(const QString &secret)
 	QUrl apiUrl = getApiUrl(p, "get_folder_peers", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -432,10 +465,13 @@ void BtsApi::getFolderPeers(const QString &secret)
 		}
 
 		emit getFolderPeersResult(res, secret);
+		emit notifier->getFolderPeersResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::getSecrets(bool encryption, const QString &secret, const QUuid &uuid)
+BtsApiNotifier *BtsApi::getSecrets(bool encryption, const QString &secret, const QUuid &uuid)
 {
 	QueryList ql;
 
@@ -448,9 +484,12 @@ void BtsApi::getSecrets(bool encryption, const QString &secret, const QUuid &uui
 	QUrl apiUrl = getApiUrl(p, "get_secrets", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, uuid]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, uuid]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -466,28 +505,36 @@ void BtsApi::getSecrets(bool encryption, const QString &secret, const QUuid &uui
 		QString ec = obj.value("encryption").toString();
 
 		if(uuid.isNull())
+		{
 			emit getSecretsResult(rw, ro, ec);
+			emit notifier->getSecretsResult(rw, ro, ec);
+		}
 		else
+		{
 			emit getSecretsResultUuid(uuid, rw, ro, ec);
+			emit notifier->getSecretsResultUuid(uuid, rw, ro, ec);
+		}
 	});
+
+	return notifier;
 }
 
-void BtsApi::getSecrets(bool encryption, const QUuid &uuid)
+BtsApiNotifier *BtsApi::getSecrets(bool encryption, const QUuid &uuid)
 {
-	getSecrets(encryption, QString(), uuid);
+	return getSecrets(encryption, QString(), uuid);
 }
 
-void BtsApi::getSecrets(const QUuid &uuid)
+BtsApiNotifier *BtsApi::getSecrets(const QUuid &uuid)
 {
-	getSecrets(false, QString(), uuid);
+	return getSecrets(false, QString(), uuid);
 }
 
-void BtsApi::getSecrets(const QString &secret)
+BtsApiNotifier *BtsApi::getSecrets(const QString &secret)
 {
-	getSecrets(false, secret);
+	return getSecrets(false, secret);
 }
 
-void BtsApi::getFolderPrefs(const QString &secret)
+BtsApiNotifier *BtsApi::getFolderPrefs(const QString &secret)
 {
 	QueryList ql;
 
@@ -496,9 +543,12 @@ void BtsApi::getFolderPrefs(const QString &secret)
 	QUrl apiUrl = getApiUrl(p, "get_folder_prefs", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -514,10 +564,13 @@ void BtsApi::getFolderPrefs(const QString &secret)
 			res[it.key()] = it.value();
 
 		emit getFolderPrefsResult(res, secret);
+		emit notifier->getFolderPrefsResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
+BtsApiNotifier *BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
 {
 	QueryList ql;
 
@@ -529,9 +582,12 @@ void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
 	QUrl apiUrl = getApiUrl(p, "set_folder_prefs", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -547,10 +603,13 @@ void BtsApi::setFolderPrefs(const QString &secret, const QVariantHash &prefs)
 			res[it.key()] = it.value();
 
 		emit setFolderPrefsResult(res, secret);
+		emit notifier->setFolderPrefsResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::getFolderHosts(const QString &secret)
+BtsApiNotifier *BtsApi::getFolderHosts(const QString &secret)
 {
 	QueryList ql;
 
@@ -559,9 +618,12 @@ void BtsApi::getFolderHosts(const QString &secret)
 	QUrl apiUrl = getApiUrl(p, "get_folder_hosts", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -578,10 +640,13 @@ void BtsApi::getFolderHosts(const QString &secret)
 			res << val.toString();
 
 		emit getFolderHostsResult(res, secret);
+		emit notifier->getFolderHostsResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
+BtsApiNotifier *BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 {
 	QueryList ql;
 
@@ -593,9 +658,12 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 	QString queryString = apiUrl.query(QUrl::FullyEncoded);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply, secret]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier, secret]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -612,17 +680,23 @@ void BtsApi::setFolderHosts(const QString &secret, const QStringList &hosts)
 			res << val.toString();
 
 		emit setFolderHostsResult(res, secret);
+		emit notifier->setFolderHostsResult(res, secret);
 	});
+
+	return notifier;
 }
 
-void BtsApi::getPreferences()
+BtsApiNotifier *BtsApi::getPreferences()
 {
 	QUrl apiUrl = getApiUrl(p, "get_prefs");
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -638,10 +712,13 @@ void BtsApi::getPreferences()
 			res[it.key()] = it.value();
 
 		emit getPreferencesResult(res);
+		emit notifier->getPreferencesResult(res);
 	});
+
+	return notifier;
 }
 
-void BtsApi::setPreferences(const QVariantHash &prefs)
+BtsApiNotifier *BtsApi::setPreferences(const QVariantHash &prefs)
 {
 	QueryList ql;
 
@@ -651,9 +728,12 @@ void BtsApi::setPreferences(const QVariantHash &prefs)
 	QUrl apiUrl = getApiUrl(p, "set_prefs", ql);
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -669,17 +749,23 @@ void BtsApi::setPreferences(const QVariantHash &prefs)
 			res[it.key()] = it.value();
 
 		emit setPreferencesResult(res);
+		emit notifier->setPreferencesResult(res);
 	});
+
+	return notifier;
 }
 
-void BtsApi::getOsName()
+BtsApiNotifier *BtsApi::getOsName()
 {
 	QUrl apiUrl = getApiUrl(p, "get_os");
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -691,17 +777,23 @@ void BtsApi::getOsName()
 		QJsonObject obj = doc.object();
 
 		emit getOsNameResult(obj.value("os").toString());
+		emit notifier->getOsNameResult(obj.value("os").toString());
 	});
+
+	return notifier;
 }
 
-void BtsApi::getVersion()
+BtsApiNotifier *BtsApi::getVersion()
 {
 	QUrl apiUrl = getApiUrl(p, "get_version");
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -712,18 +804,24 @@ void BtsApi::getVersion()
 
 		QJsonObject obj = doc.object();
 
-		emit getVersionResult(obj.value("os").toString());
+		emit getVersionResult(obj.value("version").toString());
+		emit notifier->getVersionResult(obj.value("version").toString());
 	});
+
+	return notifier;
 }
 
-void BtsApi::getSpeed()
+BtsApiNotifier *BtsApi::getSpeed()
 {
 	QUrl apiUrl = getApiUrl(p, "get_speed");
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -738,17 +836,23 @@ void BtsApi::getSpeed()
 		qint64 up = obj.value("upload").toVariant().toLongLong();
 
 		emit getSpeedResult(down, up);
+		emit notifier->getSpeedResult(down, up);
 	});
+
+	return notifier;
 }
 
-void BtsApi::shutdown()
+BtsApiNotifier *BtsApi::shutdown()
 {
 	QUrl apiUrl = getApiUrl(p, "shutdown");
 
 	QNetworkReply *reply = p->nam->get(QNetworkRequest(apiUrl));
+	BtsApiNotifier *notifier = new BtsApiNotifier(this);
 
-	connect(reply, &QNetworkReply::finished, [this, reply]()
+	connect(reply, &QNetworkReply::finished, [this, reply, notifier]()
 	{
+		notifier->deleteLater();
+
 		if(checkForError(reply))
 			return;
 
@@ -758,5 +862,14 @@ void BtsApi::shutdown()
 			return;
 
 		emit shutdownResult();
+		emit notifier->shutdownResult();
 	});
+
+	return notifier;
+}
+
+
+BtsApiNotifier::BtsApiNotifier(QObject *parent)
+	:QObject(parent)
+{
 }
