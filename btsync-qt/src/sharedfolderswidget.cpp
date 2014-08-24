@@ -25,7 +25,7 @@ SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
 
 	QTimer *updateTimer = new QTimer(this);
 	updateTimer->setInterval(2000);
-	//updateTimer->start();
+	updateTimer->start();
 
 	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateTick()));
 

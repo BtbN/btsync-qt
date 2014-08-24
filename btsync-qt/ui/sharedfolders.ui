@@ -50,6 +50,9 @@
    </item>
    <item row="0" column="0" colspan="4">
     <widget class="QTableWidget" name="foldersTable">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
      </property>

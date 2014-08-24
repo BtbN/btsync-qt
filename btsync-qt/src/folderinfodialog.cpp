@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QRegExp>
+#include <QTimer>
 
 #include <bts_api.h>
 #include <bts_apifolder.h>
@@ -25,6 +26,13 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 	applyButton = dialogButtons->button(QDialogButtonBox::Apply);
 
 	applyButton->setEnabled(false);
+
+	QTimer *updatePeersTimer = new QTimer(this);
+	updatePeersTimer->setInterval(2000);
+	updatePeersTimer->setSingleShot(false);
+	updatePeersTimer->start();
+
+	connect(updatePeersTimer, SIGNAL(timeout()), folderApi, SLOT(getFolderPeers()));
 
 	connect(copySecretButton, SIGNAL(clicked()), this, SLOT(onCopySecret()));
 	connect(copyRoSecretButton, SIGNAL(clicked()), this, SLOT(onCopyRoSecret()));
@@ -54,10 +62,12 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 	connect(folderApi, SIGNAL(getFolderPrefsResult(QVariantHash,QString)), this, SLOT(updatePrefs(QVariantHash)));
 	connect(folderApi, SIGNAL(setFolderPrefsResult(QVariantHash,QString)), this, SLOT(updatePrefs(QVariantHash)));
 	connect(folderApi, SIGNAL(getFoldersResult(QVector<BtsGetFoldersResult>,QString)), this, SLOT(updateName(QVector<BtsGetFoldersResult>)));
+	connect(folderApi, SIGNAL(getFolderPeersResult(QVector<BtsGetFolderPeersResult>,QString)), this, SLOT(updatePeers(QVector<BtsGetFolderPeersResult>)));
 
 	folderApi->getSecrets(true);
 	folderApi->getFolderHosts();
 	folderApi->getFolderPrefs();
+	folderApi->getFolderPeers();
 	folderApi->getFolders();
 }
 
@@ -212,4 +222,9 @@ void FolderInfoDialog::updateName(const QVector<BtsGetFoldersResult> &results)
 	name = thisDir.dir.mid(thisDir.dir.lastIndexOf(QRegExp("[\\\\/]")) + 1);
 
 	updateQr();
+}
+
+void FolderInfoDialog::updatePeers(const QVector<BtsGetFolderPeersResult> &peers)
+{
+
 }

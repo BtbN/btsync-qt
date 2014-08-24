@@ -41,11 +41,11 @@ MainWin::MainWin(QWidget *parent)
 
 void MainWin::clientReady()
 {
-	//speedTimer->start();
+	speedTimer->start();
 	api->getSpeed();
 }
 
 void MainWin::updateSpeed(qint64 down, qint64 up)
 {
-	speedLabel->setText(tr("%1 kB/s down | %2 kB/s up").arg(down / 1024.0).arg(up / 1024.0));
+	speedLabel->setText(tr("%1 kB/s down | %2 kB/s up").arg(down / 1024.0, 0, 'f', 1).arg(up / 1024.0, 0, 'f', 1));
 }

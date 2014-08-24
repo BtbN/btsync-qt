@@ -6,6 +6,7 @@
 class BtsApi;
 class BtsApiFolder;
 struct BtsGetFoldersResult;
+struct BtsGetFolderPeersResult;
 
 class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 {
@@ -29,6 +30,7 @@ class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 	void updateHosts(const QStringList &hosts);
 	void updatePrefs(const QVariantHash &prefs);
 	void updateName(const QVector<BtsGetFoldersResult> &results);
+	void updatePeers(const QVector<BtsGetFolderPeersResult> &peers);
 
 	private slots:
 	void sendCurHosts();
