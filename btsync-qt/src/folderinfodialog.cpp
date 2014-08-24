@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QDateTime>
 #include <QRegExp>
 #include <QTimer>
 
@@ -224,7 +225,62 @@ void FolderInfoDialog::updateName(const QVector<BtsGetFoldersResult> &results)
 	updateQr();
 }
 
+static QString convertSpeedToString(double speed)
+{
+	QString speedString = QObject::tr("%L1 Byte/s").arg(speed, 0, 'f', 0);
+
+	if(speed >= 1000.0)
+	{
+		speed /= 1024.0;
+		speedString = QObject::tr("%L1 kB/s").arg(speed, 0, 'f', 1);
+	}
+
+	if(speed >= 1000.0)
+	{
+		speed /= 1024.0;
+		speedString = QObject::tr("%L1 MB/s").arg(speed, 0, 'f', 1);
+	}
+
+	return speedString;
+}
+
 void FolderInfoDialog::updatePeers(const QVector<BtsGetFolderPeersResult> &peers)
 {
+	if(peersTable->rowCount() != peers.size())
+		peersTable->setRowCount(peers.size());
 
+	int row = 0;
+	for(const BtsGetFolderPeersResult &peer: peers)
+	{
+		QTableWidgetItem *items[6];
+
+		for(int i = 0; i < 6; ++i)
+		{
+			items[i] = peersTable->item(row, i);
+
+			if(!items[i])
+			{
+				items[i] = new QTableWidgetItem();
+				peersTable->setItem(row, i, items[i]);
+			}
+		}
+
+		QTableWidgetItem *nameItem = items[0];
+		QTableWidgetItem *idItem = items[1];
+		QTableWidgetItem *conItem = items[2];
+		QTableWidgetItem *syncItem = items[3];
+		QTableWidgetItem *downItem = items[4];
+		QTableWidgetItem *upItem = items[5];
+
+		QDateTime time = QDateTime::fromTime_t(peer.synced);
+
+		nameItem->setText(peer.name);
+		idItem->setText(peer.id);
+		conItem->setText(peer.connection);
+		syncItem->setText(time.toString());
+		downItem->setText(convertSpeedToString(peer.download));
+		upItem->setText(convertSpeedToString(peer.upload));
+
+		row += 1;
+	}
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>385</height>
+    <width>687</width>
+    <height>401</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="secretsTab">
       <attribute name="title">
        <string>Secrets</string>
       </attribute>
@@ -115,7 +115,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="qrTab">
       <attribute name="title">
        <string>QRCode</string>
       </attribute>
@@ -168,9 +168,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Peers">
+     <widget class="QWidget" name="peersTab">
       <attribute name="title">
-       <string>Seite</string>
+       <string>Peers</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -182,13 +182,43 @@
           <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+          <enum>QAbstractItemView::SelectItems</enum>
          </property>
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>ID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Connection</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Last synced</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Down</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Up</string>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="propsTab">
       <attribute name="title">
        <string>Properties</string>
       </attribute>

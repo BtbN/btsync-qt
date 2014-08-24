@@ -166,14 +166,12 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 		{
 			pathItem = new QTableWidgetItem();
 			foldersTable->setItem(row, 0, pathItem);
-			pathItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		}
 
 		if(!sizeItem)
 		{
 			sizeItem = new QTableWidgetItem();
 			foldersTable->setItem(row, 1, sizeItem);
-			sizeItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		}
 
 		pathItem->setData(Qt::UserRole, folder.secret);
@@ -185,7 +183,7 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 			dir = dir.mid(4);
 
 		double size = folder.size;
-		QString sizeString = tr("%L1 Byte").arg(size, 0, 'f', 1);
+		QString sizeString = tr("%L1 Byte").arg(size, 0, 'f', 0);
 
 		if(size >= 1000.0)
 		{
