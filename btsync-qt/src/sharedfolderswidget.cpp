@@ -184,11 +184,41 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 		if(dir.startsWith("\\\\?\\"))
 			dir = dir.mid(4);
 
+		double size = folder.size;
+		QString sizeString = tr("%L1 Byte").arg(size, 0, 'f', 1);
+
+		if(size >= 1000.0)
+		{
+			size /= 1024.0;
+			sizeString = tr("%L1 kB").arg(size, 0, 'f', 1);
+		}
+
+		if(size >= 1000.0)
+		{
+			size /= 1024.0;
+			sizeString = tr("%L1 MB").arg(size, 0, 'f', 1);
+		}
+
+		if(size >= 1000.0)
+		{
+			size /= 1024.0;
+			sizeString = tr("%L1 GB").arg(size, 0, 'f', 1);
+		}
+
+		QString infoString = "";
+
+		if(folder.indexing != 0)
+			infoString += tr(" (indexing)");
+
+		if(folder.error != 0)
+			infoString += tr(" (error)");
+
 		pathItem->setText(dir);
 		sizeItem->setText(
-			tr("%1 in %2")
-				.arg(tr("%Ln byte(s)", "", folder.size))
+			tr("%1 in %2%3")
+				.arg(sizeString)
 				.arg(tr("%Ln file(s)", "", folder.files))
+				.arg(infoString)
 		);
 
 		row += 1;

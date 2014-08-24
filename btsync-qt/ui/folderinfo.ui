@@ -173,23 +173,13 @@
        <string>Properties</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="lanCheck">
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="overwriteCheck">
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Search LAN</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="dhtCheck">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Search DHT Network</string>
+          <string>Overwrite changes</string>
          </property>
         </widget>
        </item>
@@ -203,6 +193,26 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="dhtCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Search DHT Network</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="lanCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Search LAN</string>
+         </property>
+        </widget>
+       </item>
        <item row="4" column="0">
         <widget class="QCheckBox" name="archiveCheck">
          <property name="enabled">
@@ -213,13 +223,20 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="8" column="0">
         <widget class="QCheckBox" name="predefHostsCheck">
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
           <string>Use predefined hosts</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0" rowspan="3">
+        <widget class="QListWidget" name="hostsList">
+         <property name="enabled">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -233,31 +250,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0" rowspan="3">
-        <widget class="QListWidget" name="hostsList">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1" colspan="2">
-        <widget class="QLineEdit" name="newHostEdit">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QPushButton" name="removeHostButton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Remove</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
+       <item row="10" column="1">
         <widget class="QPushButton" name="addHostButton">
          <property name="enabled">
           <bool>false</bool>
@@ -267,7 +260,24 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="3">
+       <item row="11" column="1">
+        <widget class="QPushButton" name="removeHostButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1" colspan="2">
+        <widget class="QLineEdit" name="newHostEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="3">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -280,7 +290,7 @@
          </property>
         </spacer>
        </item>
-       <item row="8" column="2" rowspan="2">
+       <item row="10" column="2" rowspan="2">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -292,6 +302,16 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="6" column="0">
+        <widget class="QCheckBox" name="selSyncCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Selective sync</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

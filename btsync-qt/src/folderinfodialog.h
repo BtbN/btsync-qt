@@ -5,6 +5,7 @@
 
 class BtsApi;
 class BtsApiFolder;
+struct BtsGetFoldersResult;
 
 class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 {
@@ -27,6 +28,7 @@ class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 	void updateSecrets(const QString &rw, const QString &ro, const QString &ec);
 	void updateHosts(const QStringList &hosts);
 	void updatePrefs(const QVariantHash &prefs);
+	void updateName(const QVector<BtsGetFoldersResult> &results);
 
 	private slots:
 	void sendCurHosts();
@@ -37,4 +39,5 @@ class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 	QString roSecret;
 	QString rwSecret;
 	bool blockChanges;
+	QString name;
 };

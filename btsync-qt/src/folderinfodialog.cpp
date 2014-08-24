@@ -1,5 +1,8 @@
+#include <QtDebug>
+
 #include <QApplication>
 #include <QClipboard>
+#include <QRegExp>
 
 #include <bts_api.h>
 #include <bts_apifolder.h>
@@ -39,6 +42,8 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 	connect(dhtCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
 	connect(archiveCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
 	connect(predefHostsCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(overwriteCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
+	connect(selSyncCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
 
 	connect(addHostButton, SIGNAL(clicked()), this, SLOT(onAddHost()));
 	connect(removeHostButton, SIGNAL(clicked()), this, SLOT(onDelHost()));
@@ -48,10 +53,12 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 	connect(folderApi, SIGNAL(setFolderHostsResult(QStringList,QString)), this, SLOT(updateHosts(QStringList)));
 	connect(folderApi, SIGNAL(getFolderPrefsResult(QVariantHash,QString)), this, SLOT(updatePrefs(QVariantHash)));
 	connect(folderApi, SIGNAL(setFolderPrefsResult(QVariantHash,QString)), this, SLOT(updatePrefs(QVariantHash)));
+	connect(folderApi, SIGNAL(getFoldersResult(QVector<BtsGetFoldersResult>,QString)), this, SLOT(updateName(QVector<BtsGetFoldersResult>)));
 
 	folderApi->getSecrets(true);
 	folderApi->getFolderHosts();
 	folderApi->getFolderPrefs();
+	folderApi->getFolders();
 }
 
 void FolderInfoDialog::onCopySecret()
@@ -86,6 +93,8 @@ void FolderInfoDialog::onApplyButton()
 	prefs["use_dht"] = dhtCheck->isChecked() ? 1 : 0;
 	prefs["use_sync_trash"] = archiveCheck->isChecked() ? 1 : 0;
 	prefs["use_hosts"] = predefHostsCheck->isChecked() ? 1 : 0;
+	prefs["overwrite_changes"] = overwriteCheck->isChecked() ? 1 : 0;
+	prefs["selective_sync"] = selSyncCheck->isChecked() ? 1 : 0;
 
 	folderApi->setFolderPrefs(prefs);
 
@@ -107,7 +116,7 @@ void FolderInfoDialog::updateQr()
 	if(readOnlyRadio->isChecked())
 		secret = roSecret;
 
-	QString qrString = QString("btsync://%1?n=NOT_YET_IMPLEMENTED__TODO").arg(secret); // TODO
+	QString qrString = QString("btsync://%1?n=%2").arg(secret).arg(name);
 
 	qrCodeWidget->setText(qrString);
 }
@@ -175,6 +184,8 @@ void FolderInfoDialog::updatePrefs(const QVariantHash &prefs)
 	dhtCheck->setEnabled(true);
 	archiveCheck->setEnabled(true);
 	predefHostsCheck->setEnabled(true);
+	overwriteCheck->setEnabled(true);
+	selSyncCheck->setEnabled(true);
 	applyButton->setEnabled(false);
 
 	blockChanges = true;
@@ -185,6 +196,20 @@ void FolderInfoDialog::updatePrefs(const QVariantHash &prefs)
 	dhtCheck->setChecked(prefs.value("use_dht").toInt() == 1);
 	archiveCheck->setChecked(prefs.value("use_sync_trash").toInt() == 1);
 	predefHostsCheck->setChecked(prefs.value("use_hosts").toInt() == 1);
+	overwriteCheck->setChecked(prefs.value("overwrite_changes").toInt() == 1);
+	selSyncCheck->setChecked(prefs.value("selective_sync").toInt() == 1);
 
 	blockChanges = false;
+}
+
+void FolderInfoDialog::updateName(const QVector<BtsGetFoldersResult> &results)
+{
+	if(results.isEmpty())
+		return;
+
+	const BtsGetFoldersResult &thisDir = results.first();
+
+	name = thisDir.dir.mid(thisDir.dir.lastIndexOf(QRegExp("[\\\\/]")) + 1);
+
+	updateQr();
 }
