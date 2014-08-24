@@ -40,6 +40,7 @@ class FolderInfoDialog : public QDialog, private Ui::FolderInfoDialog
 	QPushButton *applyButton;
 	QString roSecret;
 	QString rwSecret;
+	QString ecSecret;
 	bool blockChanges;
 	QString name;
 };

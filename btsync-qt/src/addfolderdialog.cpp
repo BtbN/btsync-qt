@@ -14,12 +14,9 @@ AddFolderDialog::AddFolderDialog(BtsApi *api, QWidget *parent)
 
 	setupUi(this);
 
-	genSecretUuid = QUuid::createUuid();
-
 	connect(generateSecretButton, SIGNAL(clicked()), this, SLOT(genSecret()));
+	connect(genEcButton, SIGNAL(clicked()), this, SLOT(genEcSecret()));
 	connect(browseButton, SIGNAL(clicked()), this, SLOT(browsePath()));
-
-	connect(api, SIGNAL(getSecretsResultUuid(QUuid,QString,QString,QString)), this, SLOT(genSecretResult(QUuid,QString)));
 }
 
 QString AddFolderDialog::getPath()
@@ -44,7 +41,12 @@ void AddFolderDialog::setSecret(const QString &secret)
 
 void AddFolderDialog::genSecret()
 {
-	api->getSecrets(genSecretUuid);
+	connect(api->getSecrets(false), SIGNAL(getSecretsResult(QString,QString,QString)), this, SLOT(genSecretResult(QString)));
+}
+
+void AddFolderDialog::genEcSecret()
+{
+	connect(api->getSecrets(true), SIGNAL(getSecretsResult(QString,QString,QString)), this, SLOT(genSecretResult(QString)));
 }
 
 void AddFolderDialog::browsePath()
@@ -57,10 +59,7 @@ void AddFolderDialog::browsePath()
 	folderEdit->setText(fileName);
 }
 
-void AddFolderDialog::genSecretResult(const QUuid &uuid, const QString &secret)
+void AddFolderDialog::genSecretResult(const QString &secret)
 {
-	if(uuid != genSecretUuid)
-		return;
-
 	secretEdit->setText(secret);
 }

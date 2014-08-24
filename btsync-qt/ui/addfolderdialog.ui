@@ -109,14 +109,21 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="genEcButton">
+     <property name="text">
+      <string>Generate Encrypted</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>secretEdit</tabstop>
   <tabstop>generateSecretButton</tabstop>
+  <tabstop>genEcButton</tabstop>
   <tabstop>folderEdit</tabstop>
   <tabstop>browseButton</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

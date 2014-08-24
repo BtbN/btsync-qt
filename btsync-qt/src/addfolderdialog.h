@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QDialog>
-#include <QUuid>
 #include "ui_addfolderdialog.h"
 
 class BtsApi;
@@ -21,10 +20,10 @@ class AddFolderDialog : public QDialog, private Ui::AddFolderDialog
 
 	private slots:
 	void genSecret();
+	void genEcSecret();
 	void browsePath();
-	void genSecretResult(const QUuid &uuid, const QString &secret);
+	void genSecretResult(const QString &secret);
 
 	private:
 	BtsApi *api;
-	QUuid genSecretUuid;
 };

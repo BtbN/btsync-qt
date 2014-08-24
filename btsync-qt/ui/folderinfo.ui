@@ -120,8 +120,21 @@
        <string>QRCode</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0" colspan="4">
+       <item row="0" column="0" colspan="5">
         <widget class="QRCodeWidget" name="qrCodeWidget" native="true"/>
+       </item>
+       <item row="1" column="4">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>180</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item row="1" column="0">
         <spacer name="horizontalSpacer">
@@ -154,17 +167,14 @@
         </widget>
        </item>
        <item row="1" column="3">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <widget class="QRadioButton" name="ecOnlyRadio">
+         <property name="enabled">
+          <bool>false</bool>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>180</width>
-           <height>20</height>
-          </size>
+         <property name="text">
+          <string>Encrypted</string>
          </property>
-        </spacer>
+        </widget>
        </item>
       </layout>
      </widget>

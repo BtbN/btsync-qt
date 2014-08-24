@@ -44,6 +44,7 @@ FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWi
 
 	connect(readOnlyRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
 	connect(fullAccessRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
+	connect(ecOnlyRadio, SIGNAL(clicked()), this, SLOT(updateQr()));
 
 	connect(relayCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
 	connect(trackerCheck, SIGNAL(stateChanged(int)), this, SLOT(changed()));
@@ -126,6 +127,10 @@ void FolderInfoDialog::updateQr()
 
 	if(readOnlyRadio->isChecked())
 		secret = roSecret;
+	else if(ecOnlyRadio->isChecked())
+		secret = ecSecret;
+
+	qDebug() << secret;
 
 	QString qrString = QString("btsync://%1?n=%2").arg(secret).arg(name);
 
@@ -173,6 +178,10 @@ void FolderInfoDialog::updateSecrets(const QString &rw, const QString &ro, const
 
 	roSecret = ro;
 	rwSecret = rw;
+	ecSecret = ec;
+
+	if(!ec.isEmpty())
+		ecOnlyRadio->setEnabled(true);
 
 	updateQr();
 }
