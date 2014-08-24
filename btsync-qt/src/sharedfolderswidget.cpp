@@ -40,8 +40,6 @@ void SharedFoldersWidget::setClient(BtsClient *newclient)
 	{
 		api->disconnect(this);
 		api->deleteLater();
-
-		client = nullptr;
 		api = nullptr;
 	}
 
