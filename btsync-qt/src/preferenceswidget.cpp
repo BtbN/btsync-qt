@@ -123,10 +123,10 @@ void PreferencesWidget::prefsResult(const QVariantHash &prefs)
 			layout->addWidget(edit, row, 1);
 
 			if(knownNumberOptions.contains(it.key())
-			        || it.value().type() == QMetaType::Double
-			        || it.value().type() == QMetaType::Float
-			        || it.value().type() == QMetaType::Int
-			        || it.value().type() == QMetaType::UInt)
+			        || (QMetaType::Type)it.value().type() == QMetaType::Double
+			        || (QMetaType::Type)it.value().type() == QMetaType::Float
+			        || (QMetaType::Type)it.value().type() == QMetaType::Int
+			        || (QMetaType::Type)it.value().type() == QMetaType::UInt)
 			{
 				edit->setValidator(new QIntValidator(widget));
 				edit->setText(QString("%1").arg(it.value().toLongLong()));

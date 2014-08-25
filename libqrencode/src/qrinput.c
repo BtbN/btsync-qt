@@ -734,6 +734,7 @@ static int QRinput_checkModeFNC1Second(int size, const unsigned char *data)
 	if(size != 1) return -1;
 
 	/* No data check required. */
+	(void)data;
 
 	return 0;
 }
