@@ -3,6 +3,9 @@
 #include <QWidget>
 #include "ui_devices.h"
 
+#include <bts_api.h>
+
+struct BtsGetFoldersResult;
 class BtsClient;
 
 class DevicesWidget : public QWidget, private Ui::DevicesWidget
@@ -14,6 +17,13 @@ class DevicesWidget : public QWidget, private Ui::DevicesWidget
 
 	void setClient(BtsClient *newclient);
 
+	private slots:
+	void updateTable();
+	void getFoldersRes(const QVector<BtsGetFoldersResult> &folders);
+	void fillTable();
+
 	private:
 	BtsClient *client;
+	BtsApi *api;
+	QHash<QString, QVector<BtsGetFolderPeersResult> > folderPeersHash;
 };

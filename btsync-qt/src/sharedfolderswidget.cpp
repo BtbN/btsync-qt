@@ -153,9 +153,11 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 	if(foldersTable->rowCount() != result.size())
 		foldersTable->setRowCount(result.size());
 
-	int row = 0;
+	int row = -1;
 	for(const BtsGetFoldersResult &folder: result)
 	{
+		row += 1;
+
 		QTableWidgetItem *pathItem = foldersTable->item(row, 0);
 		QTableWidgetItem *sizeItem = foldersTable->item(row, 1);
 
@@ -215,8 +217,6 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 				.arg(tr("%Ln file(s)", "", folder.files))
 				.arg(infoString)
 		);
-
-		row += 1;
 	}
 }
 

@@ -266,9 +266,11 @@ void FolderInfoDialog::updatePeers(const QVector<BtsGetFolderPeersResult> &peers
 	if(peersTable->rowCount() != peers.size())
 		peersTable->setRowCount(peers.size());
 
-	int row = 0;
+	int row = -1;
 	for(const BtsGetFolderPeersResult &peer: peers)
 	{
+		row += 1;
+
 		QTableWidgetItem *items[6];
 
 		for(int i = 0; i < 6; ++i)
@@ -297,7 +299,5 @@ void FolderInfoDialog::updatePeers(const QVector<BtsGetFolderPeersResult> &peers
 		syncItem->setText(time.toString());
 		downItem->setText(convertSpeedToString(peer.download));
 		upItem->setText(convertSpeedToString(peer.upload));
-
-		row += 1;
 	}
 }

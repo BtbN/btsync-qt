@@ -13,6 +13,48 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTableWidget" name="devicesTable">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <column>
+      <property name="text">
+       <string>Device</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Folder</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Connection</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Synced</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Down</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Up</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
