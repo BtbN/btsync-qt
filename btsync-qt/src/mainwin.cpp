@@ -3,6 +3,7 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QTimer>
+#include <QIcon>
 
 #include <bts_spawnclient.h>
 #include <bts_api.h>
@@ -14,6 +15,8 @@ MainWin::MainWin(QWidget *parent)
 	:QMainWindow(parent)
 {
 	setupUi(this);
+
+	setWindowIcon(QIcon(":/icons/btsync.png"));
 
 	spcl = new BtsSpawnClient(this);
 

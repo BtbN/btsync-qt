@@ -3,9 +3,13 @@ project(btsync-qt)
 find_package(Qt5Widgets REQUIRED)
 
 if(UNIX)
-	set(btsync-qt_UNIX_SOURCES
+	set(btsync-qt_PLATFORM_SOURCES
 		src/sighandler.cpp
 		src/sighandler.h
+		)
+elseif(WIN32)
+	set(btsync-qt_PLATFORM_SOURCES
+		res/icon.rc
 		)
 endif()
 
@@ -29,7 +33,7 @@ set(btsync-qt_SOURCES
 	src/folderinfodialog.h
 	src/qrcodewidget.cpp
 	src/qrcodewidget.h
-	${btsync-qt_UNIX_SOURCES}
+	${btsync-qt_PLATFORM_SOURCES}
 	)
 
 set(btsync-qt_UI
@@ -43,11 +47,17 @@ set(btsync-qt_UI
 	ui/folderinfo.ui
 	)
 
-qt5_wrap_ui(btsync-qt_UI_HEADERS ${btsync-qt_UI})
+set(btsync-qt_QRC
+	res/res.qrc
+	)
+
+qt5_wrap_ui(btsync-qt_UI_SOURCES ${btsync-qt_UI})
+qt5_add_resources(btsync-qt_RES_SOURCES ${btsync-qt_QRC})
 
 add_executable(btsync-qt WIN32
 	${btsync-qt_SOURCES}
-	${btsync-qt_UI_HEADERS})
+	${btsync-qt_UI_SOURCES}
+	${btsync-qt_RES_SOURCES})
 target_link_libraries(btsync-qt
 	libbtsync-qt
 	qrencode
