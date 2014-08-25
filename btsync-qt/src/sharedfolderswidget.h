@@ -6,6 +6,7 @@
 
 #include <bts_api.h>
 
+class QTableWidgetItem;
 class BtsClient;
 class BtsApi;
 
@@ -24,6 +25,8 @@ class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 	void folderInfo();
 	void updateTick();
 	void updateFolders(const QVector<BtsGetFoldersResult> result);
+	void itemDoubleClicked(QTableWidgetItem *item);
+	void showInfoDialog(const QString &secret);
 
 	private:
 	BtsClient *client;

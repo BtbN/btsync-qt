@@ -130,8 +130,6 @@ void FolderInfoDialog::updateQr()
 	else if(ecOnlyRadio->isChecked())
 		secret = ecSecret;
 
-	qDebug() << secret;
-
 	QString qrString = QString("btsync://%1?n=%2").arg(secret).arg(name);
 
 	qrCodeWidget->setText(qrString);
@@ -139,7 +137,10 @@ void FolderInfoDialog::updateQr()
 
 void FolderInfoDialog::onAddHost()
 {
-	if(newHostEdit->text().isEmpty())
+	QString txt = newHostEdit->text().trimmed();
+	QRegExp hostMatch("^[\\.a-zA-Z0-9\\-\\_]+:[0-9]{1,5}$");
+
+	if(!hostMatch.exactMatch(txt))
 		return;
 
 	hostsList->addItem(newHostEdit->text());
@@ -228,6 +229,13 @@ void FolderInfoDialog::updateName(const QVector<BtsGetFoldersResult> &results)
 		return;
 
 	const BtsGetFoldersResult &thisDir = results.first();
+
+	QString dir = thisDir.dir;
+
+	if(dir.startsWith("\\\\?\\"))
+		dir = dir.mid(4);
+
+	pathEdit->setText(dir);
 
 	name = thisDir.dir.mid(thisDir.dir.lastIndexOf(QRegExp("[\\\\/]")) + 1);
 

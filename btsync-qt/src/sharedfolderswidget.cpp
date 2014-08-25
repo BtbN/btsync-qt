@@ -32,6 +32,8 @@ SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addFolder()));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(removeFolder()));
 	connect(infoButton, SIGNAL(clicked()), this, SLOT(folderInfo()));
+
+	connect(foldersTable, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(itemDoubleClicked(QTableWidgetItem*)));
 }
 
 void SharedFoldersWidget::setClient(BtsClient *newclient)
@@ -132,10 +134,7 @@ void SharedFoldersWidget::folderInfo()
 		return;
 	}
 
-	FolderInfoDialog *dialog = new FolderInfoDialog(api, selectedSecret, this);
-	dialog->setModal(true);
-	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-	dialog->show();
+	showInfoDialog(selectedSecret);
 }
 
 void SharedFoldersWidget::updateTick()
@@ -219,4 +218,19 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 
 		row += 1;
 	}
+}
+
+void SharedFoldersWidget::itemDoubleClicked(QTableWidgetItem *item)
+{
+	QString selectedSecret = item->data(Qt::UserRole).toString();
+
+	showInfoDialog(selectedSecret);
+}
+
+void SharedFoldersWidget::showInfoDialog(const QString &secret)
+{
+	FolderInfoDialog *dialog = new FolderInfoDialog(api, secret, this);
+	dialog->setModal(true);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->show();
 }
