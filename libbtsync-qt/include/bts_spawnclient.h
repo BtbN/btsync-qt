@@ -21,6 +21,7 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 	int getPort();
 	QString getUserName();
 	QString getPassword();
+	QString getDataPath();
 
 	bool isAutorestart();
 	bool isClientReady();
@@ -34,9 +35,10 @@ class LIBBTS_EXPORT BtsSpawnClient : public BtsClient
 
 	void setAutorestart(bool autorestart);
 	void setPort(int port);
-	void setHost(QString host);
-	void setUsername(QString username);
-	void setPassword(QString password);
+	void setHost(const QString &host);
+	void setUsername(const QString &username);
+	void setPassword(const QString &password);
+	void setDataPath(const QString &dir);
 
 	void randomizePort();
 	void randomizeCredentials();

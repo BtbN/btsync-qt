@@ -28,7 +28,6 @@ static const QStringList knownNumberOptions =
 	"max_file_size_diff_for_patching",
 	"sync_trash_ttl",
 	"upload_limit",
-	"lang",
 	"send_buf_size",
 	"recv_buf_size",
 	"log_size",
@@ -92,22 +91,26 @@ void PreferencesWidget::prefsResult(const QVariantHash &prefs)
 	QGridLayout *layout = new QGridLayout(widget);
 
 	int row = 0;
-	for(QVariantHash::const_iterator it = prefs.constBegin(); it != prefs.constEnd(); ++it, ++row)
+	QStringList keys = prefs.keys();
+	keys.sort(Qt::CaseInsensitive);
+
+	for(QStringList::const_iterator it = keys.constBegin(); it != keys.constEnd(); ++it, ++row)
 	{
-		QString key = it.key();
+		QString key = *it;
+		QVariant value = prefs[key];
 
 		QLabel *titleLabel = new QLabel(widget);
-		titleLabel->setText(it.key());
+		titleLabel->setText(key);
 
 		layout->addWidget(titleLabel, row, 0);
 
-		if(knownBooleanOptions.contains(it.key()))
+		if(knownBooleanOptions.contains(key)
+		        || (QMetaType::Type)value.type() == QMetaType::Bool)
 		{
 			QCheckBox *check = new QCheckBox(widget);
 			layout->addWidget(check, row, 1);
 
-			bool isChecked = it.value().toDouble() > 0;
-			qDebug() << key << it.value() << isChecked;
+			bool isChecked = value.toBool();
 
 			check->setChecked(isChecked);
 
@@ -122,18 +125,18 @@ void PreferencesWidget::prefsResult(const QVariantHash &prefs)
 			QLineEdit *edit = new QLineEdit(widget);
 			layout->addWidget(edit, row, 1);
 
-			if(knownNumberOptions.contains(it.key())
-			        || (QMetaType::Type)it.value().type() == QMetaType::Double
-			        || (QMetaType::Type)it.value().type() == QMetaType::Float
-			        || (QMetaType::Type)it.value().type() == QMetaType::Int
-			        || (QMetaType::Type)it.value().type() == QMetaType::UInt)
+			if(knownNumberOptions.contains(key)
+			        || (QMetaType::Type)value.type() == QMetaType::Double
+			        || (QMetaType::Type)value.type() == QMetaType::Float
+			        || (QMetaType::Type)value.type() == QMetaType::Int
+			        || (QMetaType::Type)value.type() == QMetaType::UInt)
 			{
 				edit->setValidator(new QIntValidator(widget));
-				edit->setText(QString("%1").arg(it.value().toLongLong()));
+				edit->setText(QString("%1").arg(value.toLongLong()));
 			}
 			else
 			{
-				edit->setText(it.value().toString());
+				edit->setText(value.toString());
 			}
 
 			connect(edit, &QLineEdit::textEdited, [this, key](const QString &text)

@@ -23,6 +23,7 @@ struct BtsSpawnClient_private
 	int port;
 	QString username;
 	QString password;
+	QString dataPath;
 
 	int cur_port;
 	QString cur_username;
@@ -106,6 +107,25 @@ QString BtsSpawnClient::getPassword()
 	return p->cur_password;
 }
 
+QString BtsSpawnClient::getDataPath()
+{
+	if(!p->dataPath.isEmpty())
+		return p->dataPath;
+
+	QDir dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+	dataPath.mkpath("sync_storage");
+
+	if(!dataPath.cd("sync_storage"))
+	{
+		qWarning("Failed creating sync storage dir!");
+		return QString();
+	}
+
+	p->dataPath = dataPath.absolutePath();
+
+	return p->dataPath;
+}
+
 bool BtsSpawnClient::isClientReady()
 {
 	if(!p->clientProc)
@@ -146,17 +166,8 @@ void BtsSpawnClient::startClient()
 	if(isClientReady() || (p->clientProc && p->clientProc->state() == QProcess::Starting))
 		return;
 
-	QDir dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-	dataPath.mkpath("sync_storage");
-
-	if(!dataPath.cd("sync_storage"))
-	{
-		qDebug() << "Failed creating sync storage dir!";
-		return;
-	}
-
 	QJsonObject configObject;
-	configObject.insert("storage_path", dataPath.absolutePath());
+	configObject.insert("storage_path", getDataPath());
 	configObject.insert("use_gui", false);
 
 	QJsonObject webuiObject;
@@ -217,19 +228,24 @@ void BtsSpawnClient::setPort(int port)
 	p->port = port;
 }
 
-void BtsSpawnClient::setHost(QString host)
+void BtsSpawnClient::setHost(const QString &host)
 {
 	p->host = host;
 }
 
-void BtsSpawnClient::setUsername(QString username)
+void BtsSpawnClient::setUsername(const QString &username)
 {
 	p->username = username;
 }
 
-void BtsSpawnClient::setPassword(QString password)
+void BtsSpawnClient::setPassword(const QString &password)
 {
 	p->password = password;
+}
+
+void BtsSpawnClient::setDataPath(const QString &dir)
+{
+	p->dataPath = dir;
 }
 
 void BtsSpawnClient::randomizePort()

@@ -557,7 +557,7 @@ BtsApiNotifier *BtsApi::getFolderPrefs(const QString &secret)
 		QVariantHash res;
 
 		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
-			res[it.key()] = it.value();
+			res[it.key()] = it.value().toVariant();
 
 		emit getFolderPrefsResult(res, secret);
 		emit notifier->getFolderPrefsResult(res, secret);
@@ -596,7 +596,7 @@ BtsApiNotifier *BtsApi::setFolderPrefs(const QString &secret, const QVariantHash
 		QVariantHash res;
 
 		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
-			res[it.key()] = it.value();
+			res[it.key()] = it.value().toVariant();
 
 		emit setFolderPrefsResult(res, secret);
 		emit notifier->setFolderPrefsResult(res, secret);
@@ -705,7 +705,7 @@ BtsApiNotifier *BtsApi::getPreferences()
 		QVariantHash res;
 
 		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
-			res[it.key()] = it.value();
+			res[it.key()] = it.value().toVariant();
 
 		emit getPreferencesResult(res);
 		emit notifier->getPreferencesResult(res);
@@ -742,7 +742,7 @@ BtsApiNotifier *BtsApi::setPreferences(const QVariantHash &prefs)
 		QVariantHash res;
 
 		for(auto it = obj.constBegin(); it != obj.constEnd(); ++it)
-			res[it.key()] = it.value();
+			res[it.key()] = it.value().toVariant();
 
 		emit setPreferencesResult(res);
 		emit notifier->setPreferencesResult(res);
