@@ -33,6 +33,8 @@ set(btsync-qt_SOURCES
 	src/folderinfodialog.h
 	src/qrcodewidget.cpp
 	src/qrcodewidget.h
+	src/utils.cpp
+	src/utils.h
 	${btsync-qt_PLATFORM_SOURCES}
 	)
 

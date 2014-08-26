@@ -9,6 +9,7 @@
 #include <bts_api.h>
 
 #include "mainwin.h"
+#include "utils.h"
 
 
 MainWin::MainWin(QWidget *parent)
@@ -50,5 +51,7 @@ void MainWin::clientReady()
 
 void MainWin::updateSpeed(qint64 down, qint64 up)
 {
-	speedLabel->setText(tr("%1 kB/s down | %2 kB/s up").arg(down / 1024.0, 0, 'f', 1).arg(up / 1024.0, 0, 'f', 1));
+	speedLabel->setText(tr("%1 down | %2 up")
+	                    .arg(byteCountToString(down, false, true))
+	                    .arg(byteCountToString(up, false, true)));
 }

@@ -10,6 +10,7 @@
 #include <bts_apifolder.h>
 
 #include "folderinfodialog.h"
+#include "utils.h"
 
 
 FolderInfoDialog::FolderInfoDialog(BtsApi *api, const QString &folderSecret, QWidget *parent)
@@ -242,25 +243,6 @@ void FolderInfoDialog::updateName(const QVector<BtsGetFoldersResult> &results)
 	updateQr();
 }
 
-static QString convertSpeedToString(double speed)
-{
-	QString speedString = QObject::tr("%L1 Byte/s").arg(speed, 0, 'f', 0);
-
-	if(speed >= 1000.0)
-	{
-		speed /= 1024.0;
-		speedString = QObject::tr("%L1 kB/s").arg(speed, 0, 'f', 1);
-	}
-
-	if(speed >= 1000.0)
-	{
-		speed /= 1024.0;
-		speedString = QObject::tr("%L1 MB/s").arg(speed, 0, 'f', 1);
-	}
-
-	return speedString;
-}
-
 void FolderInfoDialog::updatePeers(const QVector<BtsGetFolderPeersResult> &peers)
 {
 	if(peersTable->rowCount() != peers.size())
@@ -297,7 +279,7 @@ void FolderInfoDialog::updatePeers(const QVector<BtsGetFolderPeersResult> &peers
 		idItem->setText(peer.id);
 		conItem->setText(peer.connection);
 		syncItem->setText(time.toString());
-		downItem->setText(convertSpeedToString(peer.download));
-		upItem->setText(convertSpeedToString(peer.upload));
+		downItem->setText(byteCountToString(peer.download, true, false));
+		upItem->setText(byteCountToString(peer.upload, true, false));
 	}
 }

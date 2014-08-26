@@ -1,3 +1,5 @@
+#include <QtDebug>
+
 #include <QTableWidgetItem>
 #include <QDateTime>
 #include <QTimer>
@@ -6,6 +8,7 @@
 #include <bts_client.h>
 
 #include "deviceswidget.h"
+#include "utils.h"
 
 
 DevicesWidget::DevicesWidget(QWidget *parent)
@@ -90,6 +93,9 @@ void DevicesWidget::getFoldersRes(const QVector<BtsGetFoldersResult> &folders)
 
 void DevicesWidget::fillTable()
 {
+	bool sort = devicesTable->isSortingEnabled();
+	devicesTable->setSortingEnabled(false);
+
 	int row = -1;
 	for(auto it = folderPeersHash.constBegin(); it != folderPeersHash.constEnd(); ++it)
 	{
@@ -98,6 +104,9 @@ void DevicesWidget::fillTable()
 		for(const BtsGetFolderPeersResult &peer: it.value())
 		{
 			row += 1;
+
+			if(devicesTable->rowCount() < row + 1)
+				devicesTable->setRowCount(row + 1);
 
 			QTableWidgetItem *items[6];
 
@@ -126,13 +135,20 @@ void DevicesWidget::fillTable()
 
 			QDateTime time = QDateTime::fromTime_t(peer.synced);
 
+			QString downString = byteCountToString(peer.download, true, false);
+			QString upString = byteCountToString(peer.upload, true, false);
+
 			deviceItem->setText(peer.name);
 			folderItem->setText(dirName);
 			conItem->setText(peer.connection);
 			syncItem->setText(time.toString());
+			downItem->setText(downString);
+			upItem->setText(upString);
 		}
 	}
 
 	if(devicesTable->rowCount() != row + 1)
 		devicesTable->setRowCount(row + 1);
+
+	devicesTable->setSortingEnabled(sort);
 }

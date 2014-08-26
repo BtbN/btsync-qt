@@ -12,6 +12,7 @@
 #include "sharedfolderswidget.h"
 #include "addfolderdialog.h"
 #include "folderinfodialog.h"
+#include "utils.h"
 
 
 SharedFoldersWidget::SharedFoldersWidget(QWidget *parent)
@@ -181,26 +182,7 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 		if(dir.startsWith("\\\\?\\"))
 			dir = dir.mid(4);
 
-		double size = folder.size;
-		QString sizeString = tr("%L1 Byte").arg(size, 0, 'f', 0);
-
-		if(size >= 1000.0)
-		{
-			size /= 1024.0;
-			sizeString = tr("%L1 kB").arg(size, 0, 'f', 1);
-		}
-
-		if(size >= 1000.0)
-		{
-			size /= 1024.0;
-			sizeString = tr("%L1 MB").arg(size, 0, 'f', 1);
-		}
-
-		if(size >= 1000.0)
-		{
-			size /= 1024.0;
-			sizeString = tr("%L1 GB").arg(size, 0, 'f', 1);
-		}
+		QString sizeString = byteCountToString(folder.size, true, false);
 
 		QString infoString = "";
 
@@ -223,6 +205,12 @@ void SharedFoldersWidget::updateFolders(const QVector<BtsGetFoldersResult> resul
 void SharedFoldersWidget::itemDoubleClicked(QTableWidgetItem *item)
 {
 	QString selectedSecret = item->data(Qt::UserRole).toString();
+
+	if(selectedSecret.isEmpty())
+	{
+		qCritical("No secret associated with row!");
+		return;
+	}
 
 	showInfoDialog(selectedSecret);
 }
