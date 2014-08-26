@@ -31,10 +31,12 @@ MainWin::MainWin(QWidget *parent)
 	systray = new QSystemTrayIcon(QIcon(":/icons/btsync-tray.ico"), this);
 
 	QMenu *sysMenu = new QMenu(this);
-
+	QAction *showSysAction = sysMenu->addAction(tr("Show"));
+	sysMenu->addSeparator();
 	QAction *exitSysAction = sysMenu->addAction(tr("Exit"));
-
 	systray->setContextMenu(sysMenu);
+
+	systray->setToolTip(tr("BTSync-Qt"));
 
 	systray->show();
 
@@ -59,7 +61,20 @@ MainWin::MainWin(QWidget *parent)
 	connect(speedTimer, SIGNAL(timeout()), api, SLOT(getSpeed()));
 	connect(api, SIGNAL(getSpeedResult(qint64,qint64)), this, SLOT(updateSpeed(qint64,qint64)));
 
-	connect(systray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(show()));
+	connect(systray, &QSystemTrayIcon::activated, [this](QSystemTrayIcon::ActivationReason reason)
+	{
+		if(reason == QSystemTrayIcon::DoubleClick)
+		{
+			show();
+			activateWindow();
+		}
+	});
+
+	connect(showSysAction, &QAction::triggered, [this]()
+	{
+		show();
+		activateWindow();
+	});
 
 	connect(actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(exitSysAction, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -84,7 +99,7 @@ void MainWin::closeEvent(QCloseEvent *event)
 {
 	if(QSystemTrayIcon::isSystemTrayAvailable() && systray->isVisible())
 	{
-		systray->showMessage(tr("BTSync-Qt"), tr("BTSync-Qt was closed into the system tray.\nUse File->Exit to quit the application."));
+		systray->showMessage(tr("BTSync-Qt"), tr("BTSync-Qt was minimized into the system tray."), QSystemTrayIcon::Information, 2500);
 		event->ignore();
 		hide();
 	}

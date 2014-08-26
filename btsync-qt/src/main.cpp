@@ -2,6 +2,7 @@
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QSystemTrayIcon>
 #include <QApplication>
 #include <QStringList>
 #include <QFileInfo>
@@ -52,6 +53,11 @@ int main(int argc, char *argv[])
 
 	QCommandLineOption apikeyOption(QStringList() << "a" << "apikey", "BTSync developer api key", "apikey");
 	parser.addOption(apikeyOption);
+
+	QCommandLineOption systrayOption(QStringList() << "s" << "show", "Show main window on startup instead of minimizing to the system tray");
+
+	if(QSystemTrayIcon::isSystemTrayAvailable())
+		parser.addOption(systrayOption);
 
 	parser.process(app);
 
@@ -107,7 +113,9 @@ int main(int argc, char *argv[])
 #endif
 
 	MainWin win;
-	win.show();
+
+	if(!QSystemTrayIcon::isSystemTrayAvailable() || parser.isSet(systrayOption))
+		win.show();
 
 	return app.exec();
 }
