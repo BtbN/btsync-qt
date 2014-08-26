@@ -3,8 +3,10 @@
 #include <QSystemTrayIcon>
 #include <QCloseEvent>
 #include <QStatusBar>
+#include <QAction>
 #include <QLabel>
 #include <QTimer>
+#include <QMenu>
 #include <QIcon>
 
 #include <bts_spawnclient.h>
@@ -19,11 +21,21 @@ MainWin::MainWin(QWidget *parent)
 {
 	setupUi(this);
 
-	QIcon btsIcon(":/icons/btsync.png");
+	setWindowIcon(QIcon(":/icons/btsync.png"));
 
-	setWindowIcon(btsIcon);
+	if(!QSystemTrayIcon::isSystemTrayAvailable())
+	{
+		qWarning("System tray not available!");
+	}
 
-	systray = new QSystemTrayIcon(btsIcon, this);
+	systray = new QSystemTrayIcon(QIcon(":/icons/btsync-tray.ico"), this);
+
+	QMenu *sysMenu = new QMenu(this);
+
+	QAction *exitSysAction = sysMenu->addAction(tr("Exit"));
+
+	systray->setContextMenu(sysMenu);
+
 	systray->show();
 
 	spcl = new BtsSpawnClient(this);
@@ -48,6 +60,9 @@ MainWin::MainWin(QWidget *parent)
 	connect(api, SIGNAL(getSpeedResult(qint64,qint64)), this, SLOT(updateSpeed(qint64,qint64)));
 
 	connect(systray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(show()));
+
+	connect(actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(exitSysAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	QTimer::singleShot(0, spcl, SLOT(startClient()));
 }
