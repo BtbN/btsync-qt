@@ -81,6 +81,7 @@ BtsApiNotifier *BtsApiFolder::getFolders()
 	BtsApiNotifier *res = p->api->getFolders(p->watchedSecret);
 
 	connect(res, &BtsApiNotifier::getFoldersResult, this, &BtsApiFolder::getFoldersResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -92,6 +93,7 @@ BtsApiNotifier *BtsApiFolder::removeFolder()
 	BtsApiNotifier *res = p->api->removeFolder(p->watchedSecret);
 
 	connect(res, &BtsApiNotifier::removeFolderResult, this, &BtsApiFolder::removeFolderResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -103,6 +105,7 @@ BtsApiNotifier *BtsApiFolder::getFiles(const QString &path)
 	BtsApiNotifier *res = p->api->getFiles(p->watchedSecret, path);
 
 	connect(res, &BtsApiNotifier::getFilesResult, this, &BtsApiFolder::getFilesResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -114,6 +117,7 @@ BtsApiNotifier *BtsApiFolder::setFilePrefs(const QString &path, bool download)
 	BtsApiNotifier *res = p->api->setFilePrefs(p->watchedSecret, path, download);
 
 	connect(res, &BtsApiNotifier::setFilePrefsResult, this, &BtsApiFolder::setFilePrefsResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -125,6 +129,7 @@ BtsApiNotifier *BtsApiFolder::getFolderPeers()
 	BtsApiNotifier *res = p->api->getFolderPeers(p->watchedSecret);
 
 	connect(res, &BtsApiNotifier::getFolderPeersResult, this, &BtsApiFolder::getFolderPeersResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -136,6 +141,7 @@ BtsApiNotifier *BtsApiFolder::getFolderPrefs()
 	BtsApiNotifier *res = p->api->getFolderPrefs(p->watchedSecret);
 
 	connect(res, &BtsApiNotifier::getFolderPrefsResult, this, &BtsApiFolder::getFolderPrefsResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -147,6 +153,7 @@ BtsApiNotifier *BtsApiFolder::setFolderPrefs(const QVariantHash &prefs)
 	BtsApiNotifier *res = p->api->setFolderPrefs(p->watchedSecret, prefs);
 
 	connect(res, &BtsApiNotifier::setFolderPrefsResult, this, &BtsApiFolder::setFolderPrefsResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -158,6 +165,7 @@ BtsApiNotifier *BtsApiFolder::getFolderHosts()
 	BtsApiNotifier *res = p->api->getFolderHosts(p->watchedSecret);
 
 	connect(res, &BtsApiNotifier::getFolderHostsResult, this, &BtsApiFolder::getFolderHostsResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -169,6 +177,7 @@ BtsApiNotifier *BtsApiFolder::setFolderHosts(const QStringList &hosts)
 	BtsApiNotifier *res = p->api->setFolderHosts(p->watchedSecret, hosts);
 
 	connect(res, &BtsApiNotifier::setFolderHostsResult, this, &BtsApiFolder::setFolderHostsResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }
@@ -180,6 +189,7 @@ BtsApiNotifier *BtsApiFolder::getSecrets(bool encryption)
 	BtsApiNotifier *res = p->api->getSecrets(encryption, p->watchedSecret);
 
 	connect(res, &BtsApiNotifier::getSecretsResult, this, &BtsApiFolder::getSecretsResult);
+	connect(res, &BtsApiNotifier::error, this, &BtsApiFolder::error);
 
 	return res;
 }

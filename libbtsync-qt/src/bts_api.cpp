@@ -75,18 +75,20 @@ BtsClient *BtsApi::getClient()
 	return p->client;
 }
 
-bool BtsApi::checkForError(QNetworkReply *reply)
+bool BtsApi::checkForError(QNetworkReply *reply, BtsApiNotifier *notifier)
 {
 	if(reply->error() != QNetworkReply::NoError)
 	{
-		emit error(QString("Network request to BTSync failed: %1").arg(reply->errorString()));
+		QString err = QString("Network request to BTSync failed: %1").arg(reply->errorString());
+		emit error(err);
+		emit notifier->error(err);
 		return true;
 	}
 
 	return false;
 }
 
-bool BtsApi::checkForError(const QJsonDocument &doc)
+bool BtsApi::checkForError(const QJsonDocument &doc, BtsApiNotifier *notifier)
 {
 	QJsonObject obj = doc.object();
 
@@ -96,8 +98,10 @@ bool BtsApi::checkForError(const QJsonDocument &doc)
 		return false;
 
 	QString errorString = obj.value("message").toString("no error message");
+	errorString = QString("BTSync error %1: %2").arg(errorCode).arg(errorString);
 
-	emit error(QString("BTSync error %1: %2").arg(errorCode).arg(errorString));
+	emit error(errorString);
+	emit notifier->error(errorString);
 
 	return true;
 }
@@ -159,12 +163,12 @@ BtsApiNotifier *BtsApi::getFolders(const QString &secret)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonArray arr = doc.array();
@@ -222,12 +226,12 @@ BtsApiNotifier *BtsApi::addFolder(const QString &dir, bool selective_sync, const
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		emit addFolderResult();
@@ -257,12 +261,12 @@ BtsApiNotifier *BtsApi::removeFolder(const QString &secret)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		emit removeFolderResult(secret);
@@ -322,12 +326,12 @@ BtsApiNotifier *BtsApi::getFiles(const QString &secret, const QString &path)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonArray arr = doc.array();
@@ -375,12 +379,12 @@ BtsApiNotifier *BtsApi::setFilePrefs(const QString &secret, const QString &path,
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonArray arr = doc.array();
@@ -426,12 +430,12 @@ BtsApiNotifier *BtsApi::getFolderPeers(const QString &secret)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonArray arr = doc.array();
@@ -486,12 +490,12 @@ BtsApiNotifier *BtsApi::getSecrets(bool encryption, const QString &secret, const
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -545,12 +549,12 @@ BtsApiNotifier *BtsApi::getFolderPrefs(const QString &secret)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -584,12 +588,12 @@ BtsApiNotifier *BtsApi::setFolderPrefs(const QString &secret, const QVariantHash
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -620,12 +624,12 @@ BtsApiNotifier *BtsApi::getFolderHosts(const QString &secret)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -660,12 +664,12 @@ BtsApiNotifier *BtsApi::setFolderHosts(const QString &secret, const QStringList 
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -693,12 +697,12 @@ BtsApiNotifier *BtsApi::getPreferences()
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -730,12 +734,12 @@ BtsApiNotifier *BtsApi::setPreferences(const QVariantHash &prefs)
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -762,12 +766,12 @@ BtsApiNotifier *BtsApi::getOsName()
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -790,12 +794,12 @@ BtsApiNotifier *BtsApi::getVersion()
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -818,12 +822,12 @@ BtsApiNotifier *BtsApi::getSpeed()
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		QJsonObject obj = doc.object();
@@ -849,12 +853,12 @@ BtsApiNotifier *BtsApi::shutdown()
 	{
 		notifier->deleteLater();
 
-		if(checkForError(reply))
+		if(checkForError(reply, notifier))
 			return;
 
 		QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
 
-		if(checkForError(doc))
+		if(checkForError(doc, notifier))
 			return;
 
 		emit shutdownResult();

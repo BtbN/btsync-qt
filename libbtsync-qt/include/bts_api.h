@@ -74,6 +74,7 @@ class LIBBTS_EXPORT BtsApiNotifier : public QObject
 	BtsApiNotifier(QObject *parent = 0);
 
 	signals:
+	void error(const QString &errorString);
 	void getFoldersResult(const QVector<BtsGetFoldersResult> &result, const QString &secret);
 	void addFolderResult();
 	void removeFolderResult(const QString &secret);
@@ -112,8 +113,8 @@ class LIBBTS_EXPORT BtsApi : public QObject
 	BtsClient *getClient();
 
 	private:
-	bool checkForError(QNetworkReply *reply);
-	bool checkForError(const QJsonDocument &doc);
+	bool checkForError(QNetworkReply *reply, BtsApiNotifier *notifier);
+	bool checkForError(const QJsonDocument &doc, BtsApiNotifier *notifier);
 
 	public slots:
 	BtsApiNotifier *getFolders(const QString &secret = QString());
