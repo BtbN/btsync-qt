@@ -66,6 +66,8 @@ void PreferencesWidget::setClient(BtsClient *newclient)
 
 	connect(client, SIGNAL(clientStarted()), this, SLOT(clientReady()));
 
+	connect(api, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+
 	connect(api, SIGNAL(getPreferencesResult(QVariantHash)), this, SLOT(prefsResult(QVariantHash)));
 	connect(api, SIGNAL(setPreferencesResult(QVariantHash)), this, SLOT(prefsResult(QVariantHash)));
 

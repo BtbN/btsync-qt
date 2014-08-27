@@ -28,6 +28,9 @@ class SharedFoldersWidget : public QWidget, private Ui::SharedFoldersWidget
 	void itemDoubleClicked(QTableWidgetItem *item);
 	void showInfoDialog(const QString &secret);
 
+	signals:
+	void error(const QString &error);
+
 	private:
 	BtsClient *client;
 	BtsApi *api;

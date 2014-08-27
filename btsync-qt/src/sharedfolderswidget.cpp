@@ -50,6 +50,8 @@ void SharedFoldersWidget::setClient(BtsClient *newclient)
 
 	api = new BtsApi(client, this);
 
+	connect(api, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+
 	connect(api, SIGNAL(getFoldersResult(QVector<BtsGetFoldersResult>,QString)),
 	        this, SLOT(updateFolders(QVector<BtsGetFoldersResult>)));
 

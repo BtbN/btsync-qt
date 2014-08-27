@@ -61,6 +61,13 @@ MainWin::MainWin(QWidget *parent)
 	connect(speedTimer, SIGNAL(timeout()), api, SLOT(getSpeed()));
 	connect(api, SIGNAL(getSpeedResult(qint64,qint64)), this, SLOT(updateSpeed(qint64,qint64)));
 
+	connect(api, SIGNAL(error(QString)), this, SLOT(displayError(QString)));
+	connect(devicesTab, SIGNAL(error(QString)), this, SLOT(displayError(QString)));
+	connect(historyTab, SIGNAL(error(QString)), this, SLOT(displayError(QString)));
+	connect(prefsTab, SIGNAL(error(QString)), this, SLOT(displayError(QString)));
+	connect(sharedFoldersTab, SIGNAL(error(QString)), this, SLOT(displayError(QString)));
+	connect(transfersTab, SIGNAL(error(QString)), this, SLOT(displayError(QString)));
+
 	connect(systray, &QSystemTrayIcon::activated, [this](QSystemTrayIcon::ActivationReason reason)
 	{
 		if(reason == QSystemTrayIcon::DoubleClick)
@@ -93,6 +100,11 @@ void MainWin::updateSpeed(qint64 down, qint64 up)
 	speedLabel->setText(tr("%1 down | %2 up")
 	                    .arg(byteCountToString(down, false, true))
 	                    .arg(byteCountToString(up, false, true)));
+}
+
+void MainWin::displayError(const QString &error)
+{
+	statusBar()->showMessage(error, 30000);
 }
 
 void MainWin::closeEvent(QCloseEvent *event)

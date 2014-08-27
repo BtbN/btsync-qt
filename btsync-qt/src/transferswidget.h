@@ -14,6 +14,9 @@ class TransfersWidget : public QWidget, private Ui::TransfersWidget
 
 	void setClient(BtsClient *newclient);
 
+	signals:
+	void error(const QString &error);
+
 	private:
 	BtsClient *client;
 };

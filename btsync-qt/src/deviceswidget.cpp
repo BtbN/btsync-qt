@@ -41,6 +41,7 @@ void DevicesWidget::setClient(BtsClient *newclient)
 	api = new BtsApi(client, this);
 
 	connect(client, SIGNAL(clientStarted()), this, SLOT(updateTable()));
+	connect(api, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
 
 	if(client->isClientReady())
 		updateTable();

@@ -22,6 +22,9 @@ class DevicesWidget : public QWidget, private Ui::DevicesWidget
 	void getFoldersRes(const QVector<BtsGetFoldersResult> &folders);
 	void fillTable();
 
+	signals:
+	void error(const QString &error);
+
 	private:
 	BtsClient *client;
 	BtsApi *api;

@@ -19,6 +19,7 @@ class MainWin : public QMainWindow, private Ui::MainWin
 	private slots:
 	void clientReady();
 	void updateSpeed(qint64 down, qint64 up);
+	void displayError(const QString &error);
 
 	protected:
 	void closeEvent(QCloseEvent *event);

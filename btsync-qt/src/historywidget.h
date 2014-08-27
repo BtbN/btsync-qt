@@ -14,6 +14,9 @@ class HistoryWidget : public QWidget, private Ui::HistoryWidget
 
 	void setClient(BtsClient *newclient);
 
+	signals:
+	void error(const QString &error);
+
 	private:
 	BtsClient *client;
 };

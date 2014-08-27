@@ -22,6 +22,9 @@ class PreferencesWidget : public QWidget, private Ui::PreferencesWidget
 	void stuffChanged();
 	void commitChanges();
 
+	signals:
+	void error(const QString &error);
+
 	private:
 	QVariantHash changedSettings;
 	BtsClient *client;
