@@ -4,6 +4,9 @@ project(BTSyncQt)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+set(INSTALL_LIBDIR_SUFFIX "" CACHE STRING "Suffix to the lib dir libraries are installed into")
+set(INSTALL_BINDIR_SUFFIX "" CACHE STRING "Suffix to the bin dir binaries are installed into")
+
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
 

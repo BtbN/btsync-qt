@@ -31,7 +31,38 @@ target_link_libraries(libbtsync-qt
 	PRIVATE
 		Qt5::Network)
 target_include_directories(libbtsync-qt
-	PUBLIC include)
+	PUBLIC 
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+		"$<INSTALL_INTERFACE:include/libbtsync-qt>")
 set_target_properties(libbtsync-qt PROPERTIES
+	OUTPUT_NAME btsync-qt
 	VERSION 0
 	SOVERSION 0)
+
+set(LIBBTS_VERSION "0.1")
+
+export(TARGETS libbtsync-qt FILE "${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtTarget.cmake")
+export(PACKAGE LibBtsyncQt)
+
+configure_file("LibBtsyncQtConfig.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtConfig.cmake" @ONLY)
+configure_file("LibBtsyncQtConfigVersion.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtConfigVersion.cmake" @ONLY)
+
+install(FILES ${libbtsync-qt_HEADERS}
+	DESTINATION "include/libbtsync-qt"
+	COMPONENT dev)
+install(FILES
+	"${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtConfigVersion.cmake"
+	DESTINATION "lib${INSTALL_LIBDIR_SUFFIX}/cmake/LibBtsyncQt"
+	COMPONENT dev)
+install(TARGETS libbtsync-qt
+	EXPORT LibBtsyncQtTarget
+	LIBRARY DESTINATION "lib${INSTALL_LIBDIR_SUFFIX}"
+		COMPONENT lib
+	ARCHIVE DESTINATION "lib${INSTALL_LIBDIR_SUFFIX}"
+		COMPONENT lib
+	RUNTIME DESTINATION "lib${INSTALL_LIBDIR_SUFFIX}"
+		COMPONENT lib)
+install(EXPORT LibBtsyncQtTarget
+	DESTINATION "lib${INSTALL_LIBDIR_SUFFIX}/cmake/LibBtsyncQt"
+	COMPONENT dev)

@@ -1,0 +1,9 @@
+# - Config file for the LibObs package
+# It defines the following variables
+#  LIBBTSYNCQT_LIBRARIES
+
+if(NOT TARGET libbtsync-qt)
+	include("${CMAKE_CURRENT_LIST_DIR}/LibBtsyncQtTarget.cmake")
+endif()
+
+set(LIBBTSYNCQT_LIBRARIES libbtsync-qt)

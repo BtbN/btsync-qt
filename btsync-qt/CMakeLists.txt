@@ -67,3 +67,11 @@ target_link_libraries(btsync-qt
 target_include_directories(btsync-qt
 	PRIVATE
 		src)
+
+install(TARGETS btsync-qt
+	LIBRARY DESTINATION "bin${INSTALL_BINDIR_SUFFIX}"
+		COMPONENT gui
+	ARCHIVE DESTINATION "bin${INSTALL_BINDIR_SUFFIX}"
+		COMPONENT gui
+	RUNTIME DESTINATION "bin${INSTALL_BINDIR_SUFFIX}"
+		COMPONENT gui)
