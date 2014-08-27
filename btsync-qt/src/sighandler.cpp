@@ -20,7 +20,7 @@ void SignalHandler::hupSigHandler(int unused)
 		return;
 
 	char a = 1;
-	::write(sighupFd[0], &a, sizeof(a));
+	(void) ::write(sighupFd[0], &a, sizeof(a));
 }
 
 void SignalHandler::termSigHandler(int unused)
@@ -31,7 +31,7 @@ void SignalHandler::termSigHandler(int unused)
 		return;
 
 	char a = 1;
-	::write(sigtermFd[0], &a, sizeof(a));
+	(void) ::write(sigtermFd[0], &a, sizeof(a));
 }
 
 void SignalHandler::intSigHandler(int unused)
@@ -42,7 +42,7 @@ void SignalHandler::intSigHandler(int unused)
 		return;
 
 	char a = 1;
-	::write(sigintFd[0], &a, sizeof(a));
+	(void) ::write(sigintFd[0], &a, sizeof(a));
 }
 
 SignalHandler::SignalHandler(QObject *parent)
@@ -145,7 +145,7 @@ void SignalHandler::readHup()
 	snHup->setEnabled(false);
 
 	char a;
-	::read(sighupFd[1], &a, sizeof(a));
+	(void) ::read(sighupFd[1], &a, sizeof(a));
 
 	snHup->setEnabled(true);
 }
@@ -155,7 +155,7 @@ void SignalHandler::readTerm()
 	snTerm->setEnabled(false);
 
 	char a;
-	::read(sigtermFd[1], &a, sizeof(a));
+	(void) ::read(sigtermFd[1], &a, sizeof(a));
 
 	snTerm->setEnabled(true);
 }
@@ -165,7 +165,7 @@ void SignalHandler::readInt()
 	snInt->setEnabled(false);
 
 	char a;
-	::read(sigintFd[1], &a, sizeof(a));
+	(void) ::read(sigintFd[1], &a, sizeof(a));
 
 	snInt->setEnabled(true);
 }
