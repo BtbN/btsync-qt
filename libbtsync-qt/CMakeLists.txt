@@ -39,6 +39,14 @@ set_target_properties(libbtsync-qt PROPERTIES
 	VERSION 0
 	SOVERSION 0)
 
+set(BTSYNC_BINARY_DEFAULT_PATH "" CACHE STRING "Default path to look for btsync binary")
+
+if(BTSYNC_BINARY_DEFAULT_PATH)
+	target_compile_definitions(libbtsync-qt
+		PRIVATE
+			"BT_DEF_BIN_PATH=\"${BTSYNC_BINARY_DEFAULT_PATH}\"")
+endif()
+
 set(LIBBTS_VERSION "0.1")
 
 export(TARGETS libbtsync-qt FILE "${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtTarget.cmake")

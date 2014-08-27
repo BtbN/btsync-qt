@@ -80,5 +80,9 @@ QString BtsGlobal::getBtsyncExecutablePath()
 		return globalBtsExePath;
 	}
 
+#ifdef BT_DEF_BIN_PATH
+	return BT_DEF_BIN_PATH;
+#else
 	throw BtsException("Unable to find btsync executable path");
+#endif
 }
