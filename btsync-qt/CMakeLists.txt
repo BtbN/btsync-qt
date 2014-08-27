@@ -68,6 +68,16 @@ target_include_directories(btsync-qt
 	PRIVATE
 		src)
 
+set(BIN_PREFIX "${CMAKE_INSTALL_PREFIX}/bin${INSTALL_BINDIR_SUFFIX}")
+configure_file("btsync-qt.desktop.in" "${CMAKE_CURRENT_BINARY_DIR}/btsync-qt.desktop" @ONLY)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/btsync-qt.desktop"
+	DESTINATION "share/applications"
+	COMPONENT gui)
+install(FILES "res/btsync.png"
+	DESTINATION "share/icons/hicolor/256x256/apps"
+	COMPONENT gui
+	RENAME "btsync-qt.png")
 install(TARGETS btsync-qt
 	LIBRARY DESTINATION "bin${INSTALL_BINDIR_SUFFIX}"
 		COMPONENT gui

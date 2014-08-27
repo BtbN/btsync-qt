@@ -55,9 +55,7 @@ int main(int argc, char *argv[])
 	parser.addOption(apikeyOption);
 
 	QCommandLineOption systrayOption(QStringList() << "s" << "show", "Show main window on startup instead of minimizing to the system tray");
-
-	if(QSystemTrayIcon::isSystemTrayAvailable())
-		parser.addOption(systrayOption);
+	parser.addOption(systrayOption);
 
 	parser.process(app);
 

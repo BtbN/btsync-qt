@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=btsync-qt
+GenericName=BTSync Qt GUI
+Comment=Sync your files online without a central server
+Exec=@BIN_PREFIX@/btsync-qt
+Icon=btsync-qt
+Terminal=false
+Type=Application
+Categories=Network;
+StartupNotify=false
+Actions=Visible;
+
+[Desktop Action Visible]
+Name=btsync-qt
+Exec=@BIN_PREFIX@/btsync-qt -s
+StartupNotify=true
+
