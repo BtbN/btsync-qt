@@ -1,6 +1,7 @@
 #include <QtDebug>
 
 #include <QApplication>
+#include <QMessageBox>
 #include <QClipboard>
 #include <QDateTime>
 #include <QRegExp>
@@ -109,7 +110,13 @@ void FolderInfoDialog::onApplyButton()
 	prefs["overwrite_changes"] = overwriteCheck->isChecked() ? 1 : 0;
 	prefs["selective_sync"] = selSyncCheck->isChecked() ? 1 : 0;
 
-	folderApi->setFolderPrefs(prefs);
+	connect(folderApi->setFolderPrefs(prefs), &BtsApiNotifier::error, this, [this](const QString &error)
+	{
+		folderApi->getFolderPrefs();
+		QMessageBox::warning(this,
+		                     tr("Failed saving preferences"),
+		                     tr("An error occured while saving the folder preferences:\n%1").arg(error));
+	});
 
 	sendCurHosts();
 }
@@ -169,7 +176,13 @@ void FolderInfoDialog::sendCurHosts()
 		hosts << hostsList->item(i)->text();
 	}
 
-	folderApi->setFolderHosts(hosts);
+	auto con = connect(folderApi->setFolderHosts(hosts), &BtsApiNotifier::error, this, [this](const QString &error)
+	{
+		folderApi->getFolderHosts();
+		QMessageBox::warning(this,
+		                     tr("Failed saving predefined hosts"),
+		                     tr("An error occured while saving the predefines hosts:\n%1").arg(error));
+	});
 }
 
 void FolderInfoDialog::updateSecrets(const QString &rw, const QString &ro, const QString &ec)

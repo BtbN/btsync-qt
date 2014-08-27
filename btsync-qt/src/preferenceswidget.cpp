@@ -162,5 +162,5 @@ void PreferencesWidget::stuffChanged()
 
 void PreferencesWidget::commitChanges()
 {
-	api->setPreferences(changedSettings);
+	connect(api->setPreferences(changedSettings), &BtsApiNotifier::error, this, &PreferencesWidget::clientReady);
 }
