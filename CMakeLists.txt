@@ -35,5 +35,10 @@ elseif(MSVC)
 endif()
 
 add_subdirectory(libbtsync-qt)
-add_subdirectory(libqrencode)
-add_subdirectory(btsync-qt)
+
+option(WITH_GUI "Build btsync-qt gui" ON)
+
+if(WITH_GUI)
+	add_subdirectory(libqrencode)
+	add_subdirectory(btsync-qt)
+endif()
