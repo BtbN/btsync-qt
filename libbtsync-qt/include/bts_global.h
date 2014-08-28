@@ -8,7 +8,12 @@
 class LIBBTS_EXPORT BtsException : public std::exception
 {
 	public:
-	BtsException(const QString &msg):msg(msg),constMsg(msg.toUtf8()) {}
+	BtsException(const QString &msg) noexcept
+		:msg(msg),constMsg(msg.toUtf8())
+	{}
+
+	~BtsException() noexcept
+	{}
 
 	QString getMessage() const noexcept
 	{
