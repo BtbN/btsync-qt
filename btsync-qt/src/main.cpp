@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
 	QApplication app(argc, argv);
 	app.setApplicationName("btsync-qt");
-	app.setApplicationVersion("0.1");
+	app.setApplicationVersion("1.0");
 
 	QCommandLineParser parser;
 	parser.setApplicationDescription("Qt based btsync ui");

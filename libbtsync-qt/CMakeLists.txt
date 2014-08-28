@@ -47,7 +47,7 @@ if(BTSYNC_BINARY_DEFAULT_PATH)
 			"BT_DEF_BIN_PATH=\"${BTSYNC_BINARY_DEFAULT_PATH}\"")
 endif()
 
-set(LIBBTS_VERSION "0.1")
+set(LIBBTS_VERSION "1.0")
 
 export(TARGETS libbtsync-qt FILE "${CMAKE_CURRENT_BINARY_DIR}/LibBtsyncQtTarget.cmake")
 export(PACKAGE LibBtsyncQt)
