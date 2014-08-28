@@ -4,9 +4,11 @@
 #include <QCommandLineOption>
 #include <QSystemTrayIcon>
 #include <QApplication>
+#include <QMessageBox>
 #include <QStringList>
 #include <QFileInfo>
 #include <QTime>
+#include <QDir>
 
 #include <iostream>
 
@@ -24,14 +26,24 @@ static const char *builtinApiKey = "7VZ7OB5PSMAY6Q6MZH6VXJEAYMJZFA3F7PE2Y2JUUJK7
 
 static void displayHelp(const QCommandLineParser &parser)
 {
+#ifdef Q_OS_WIN
+	QMessageBox::information(nullptr, qApp->applicationDisplayName(), parser.helpText());
+#else
 	std::cout << parser.helpText().toStdString() << std::endl;
+#endif
 }
 
 static void displayVer(const QCommandLineParser &parser)
 {
 	Q_UNUSED(parser)
 
-	std::cout << qApp->applicationName().toStdString() << " " << qApp->applicationVersion().toStdString() << std::endl;
+	QString verString = QString("%1 %2").arg(qApp->applicationDisplayName()).arg(qApp->applicationVersion());
+
+#ifdef Q_OS_WIN
+	QMessageBox::information(nullptr, qApp->applicationDisplayName(), verString);
+#else
+	std::cout << verString.toStdString() << std::endl;
+#endif
 }
 
 int main(int argc, char *argv[])
@@ -57,7 +69,15 @@ int main(int argc, char *argv[])
 	QCommandLineOption systrayOption(QStringList() << "s" << "show", "Show main window on startup instead of minimizing to the system tray");
 	parser.addOption(systrayOption);
 
-	parser.process(app);
+	if(!parser.parse(app.arguments()))
+	{
+#ifdef Q_OS_WIN
+		QMessageBox::critical(nullptr, qApp->applicationDisplayName(), parser.errorText());
+#else
+		std::cerr << parser.errorText().toStdString() << std::endl;
+#endif
+		return -1;
+	}
 
 	if(parser.isSet(helpOption))
 	{
@@ -79,11 +99,20 @@ int main(int argc, char *argv[])
 
 		if(!finfo.exists() || !finfo.isExecutable())
 		{
-			std::cerr << QString("ERROR: \"%1\" not found or nor executable").arg(path).toStdString() << std::endl;
+			QString errString =  QObject::tr("ERROR: \"%1\" not found or not executable").arg(path);
+#ifdef Q_OS_WIN
+			QMessageBox::critical(nullptr, qApp->applicationDisplayName(), errString);
+#else
+			std::cerr << errString.toStdString() << std::endl;
+#endif
 			return -1;
 		}
 
 		BtsGlobal::setBtsyncExecutablePath(parser.value(btsyncPathOption));
+	}
+	else
+	{
+		QDir::setCurrent(app.applicationDirPath());
 	}
 
 	if(parser.isSet(apikeyOption))
@@ -96,7 +125,12 @@ int main(int argc, char *argv[])
 		}
 		catch(BtsException&)
 		{
-			std::cerr << QString("Supplied APIKey \"%1\" is invalid!").arg(apikey).toStdString() << std::endl;
+			QString errString = QObject::tr("Supplied APIKey \"%1\" is invalid!").arg(apikey);
+#ifdef Q_OS_WIN
+			QMessageBox::critical(nullptr, qApp->applicationDisplayName(), errString);
+#else
+			std::cerr << errString.toStdString() << std::endl;
+#endif
 			return -1;
 		}
 	}
