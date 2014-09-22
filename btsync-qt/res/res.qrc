@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
         <file>btsync.png</file>
-        <file>btsync-tray.ico</file>
+        <file>btsync-tray.png</file>
     </qresource>
 </RCC>

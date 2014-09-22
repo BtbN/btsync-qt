@@ -9,6 +9,8 @@ struct BtsRemoteClient_private
 	int port;
 	QString username;
 	QString password;
+
+	bool notifyOnceHelper;
 };
 
 BtsRemoteClient::BtsRemoteClient(QObject *parent)
@@ -17,6 +19,7 @@ BtsRemoteClient::BtsRemoteClient(QObject *parent)
 	p = new BtsRemoteClient_private();
 
 	p->port = -1;
+	p->notifyOnceHelper = false;
 }
 
 BtsRemoteClient::BtsRemoteClient(QString host, int port, QObject *parent)
@@ -50,7 +53,11 @@ BtsRemoteClient::~BtsRemoteClient()
 
 void BtsRemoteClient::notify()
 {
-	QTimer::singleShot(0, this, SIGNAL(clientStarted()));
+	if(!p->notifyOnceHelper)
+	{
+		p->notifyOnceHelper = true;
+		QTimer::singleShot(0, this, SLOT(notifOnce()));
+	}
 }
 
 QString BtsRemoteClient::getHost()
@@ -108,4 +115,10 @@ void BtsRemoteClient::setPassword(const QString &password)
 bool BtsRemoteClient::isClientReady()
 {
 	return !getHost().isEmpty() && getPort() > 0;
+}
+
+void BtsRemoteClient::notifOnce()
+{
+	p->notifyOnceHelper = false;
+	emit clientStarted();
 }

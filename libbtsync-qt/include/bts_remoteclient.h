@@ -35,6 +35,9 @@ class LIBBTS_EXPORT BtsRemoteClient : public BtsClient
 
 	bool isClientReady();
 
+	private slots:
+	void notifOnce();
+
 	private:
 	BtsRemoteClient_private *p;
 };

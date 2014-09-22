@@ -4,7 +4,7 @@
 #include "ui_mainwin.h"
 
 class QSystemTrayIcon;
-class BtsSpawnClient;
+class BtsClient;
 class BtsApi;
 class QLabel;
 class QTimer;
@@ -14,7 +14,7 @@ class MainWin : public QMainWindow, private Ui::MainWin
 	Q_OBJECT
 
 	public:
-	MainWin(QWidget *parent = 0);
+	MainWin(BtsClient *client = nullptr, QWidget *parent = nullptr);
 
 	private slots:
 	void clientReady();
@@ -25,7 +25,7 @@ class MainWin : public QMainWindow, private Ui::MainWin
 	void closeEvent(QCloseEvent *event);
 
 	private:
-	BtsSpawnClient *spcl;
+	BtsClient *client;
 	QSystemTrayIcon *systray;
 	QTimer *speedTimer;
 	QLabel *speedLabel;

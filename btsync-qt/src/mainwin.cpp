@@ -16,8 +16,9 @@
 #include "utils.h"
 
 
-MainWin::MainWin(QWidget *parent)
+MainWin::MainWin(BtsClient *client, QWidget *parent)
 	:QMainWindow(parent)
+	,client(client)
 {
 	setupUi(this);
 
@@ -28,32 +29,38 @@ MainWin::MainWin(QWidget *parent)
 		qWarning("System tray not available!");
 	}
 
-	systray = new QSystemTrayIcon(QIcon(":/icons/btsync-tray.ico"), this);
+	systray = new QSystemTrayIcon(QIcon(":/icons/btsync-tray.png"), this);
 
 	QMenu *sysMenu = new QMenu(this);
 	QAction *showSysAction = sysMenu->addAction(tr("Show"));
 	sysMenu->addSeparator();
 	QAction *exitSysAction = sysMenu->addAction(tr("Exit"));
 	systray->setContextMenu(sysMenu);
-
 	systray->setToolTip(tr("BTSync-Qt"));
-
 	systray->show();
-
-	spcl = new BtsSpawnClient(this);
-
-	devicesTab->setClient(spcl);
-	historyTab->setClient(spcl);
-	prefsTab->setClient(spcl);
-	sharedFoldersTab->setClient(spcl);
-	transfersTab->setClient(spcl);
 
 	speedLabel = new QLabel(this);
 	statusBar()->addPermanentWidget(speedLabel);
 
-	api = new BtsApi(spcl, this);
+	if(!client)
+	{
+		client = new BtsSpawnClient(this);
+		QTimer::singleShot(0, client, SLOT(startClient()));
+	}
+	else
+	{
+		client->setParent(this);
+	}
 
-	connect(spcl, SIGNAL(clientStarted()), this, SLOT(clientReady()));
+	devicesTab->setClient(client);
+	historyTab->setClient(client);
+	prefsTab->setClient(client);
+	sharedFoldersTab->setClient(client);
+	transfersTab->setClient(client);
+
+	connect(client, SIGNAL(clientStarted()), this, SLOT(clientReady()));
+
+	api = new BtsApi(client, this);
 
 	speedTimer = new QTimer(this);
 	speedTimer->setInterval(1000);
@@ -85,8 +92,6 @@ MainWin::MainWin(QWidget *parent)
 
 	connect(actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(exitSysAction, SIGNAL(triggered()), qApp, SLOT(quit()));
-
-	QTimer::singleShot(0, spcl, SLOT(startClient()));
 }
 
 void MainWin::clientReady()

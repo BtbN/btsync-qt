@@ -11,8 +11,10 @@
 #include <QDir>
 
 #include <iostream>
+#include <memory>
 
 #include <bts_global.h>
+#include <bts_remoteclient.h>
 
 #if defined(Q_OS_UNIX) || defined(Q_OS_LINUX) || defined(Q_OS_OSX)
 #define HAVE_SIGNALHANDLER 1
@@ -66,8 +68,23 @@ int main(int argc, char *argv[])
 	QCommandLineOption apikeyOption(QStringList() << "a" << "apikey", "BTSync developer api key", "apikey");
 	parser.addOption(apikeyOption);
 
-	QCommandLineOption systrayOption(QStringList() << "s" << "show", "Show main window on startup instead of minimizing to the system tray");
+	QCommandLineOption systrayOption(QStringList() << "t" << "tray", "Minimize to systray on startup");
 	parser.addOption(systrayOption);
+
+	QCommandLineOption clientOption(QStringList() << "c" << "client", "Enable client mode, don't spawn btsync");
+	parser.addOption(clientOption);
+
+	QCommandLineOption hostOption(QStringList() << "H" << "host", "Client mode: btsync host", "host", "127.0.0.1");
+	parser.addOption(hostOption);
+
+	QCommandLineOption portOption(QStringList() << "p" << "port", "Client mode: btsync port", "port", "8080");
+	parser.addOption(portOption);
+
+	QCommandLineOption userOption(QStringList() << "u" << "user", "Client mode: btsync username", "user");
+	parser.addOption(userOption);
+
+	QCommandLineOption passOption(QStringList() << "P" << "pass", "Client mode: btsync password", "pass");
+	parser.addOption(passOption);
 
 	if(!parser.parse(app.arguments()))
 	{
@@ -144,10 +161,30 @@ int main(int argc, char *argv[])
 	QObject::connect(&sigHandler, SIGNAL(sigQuitApp()), &app, SLOT(quit()));
 #endif
 
-	MainWin win;
+	std::unique_ptr<MainWin> win;
 
-	if(!QSystemTrayIcon::isSystemTrayAvailable() || parser.isSet(systrayOption))
-		win.show();
+	if(parser.isSet(clientOption))
+	{
+		QString host = parser.value(hostOption);
+		int port = parser.value(portOption).toInt();
+
+		BtsRemoteClient *client = new BtsRemoteClient(host, port);
+
+		if(parser.isSet(userOption))
+			client->setUserName(parser.value(userOption));
+
+		if(parser.isSet(passOption))
+			client->setPassword(parser.value(passOption));
+
+		win = std::unique_ptr<MainWin>(new MainWin(client));
+	}
+	else
+	{
+		win = std::unique_ptr<MainWin>(new MainWin());
+	}
+
+	if(!parser.isSet(systrayOption))
+		win->show();
 
 	return app.exec();
 }
