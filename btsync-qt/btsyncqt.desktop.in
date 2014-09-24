@@ -8,9 +8,9 @@ Terminal=false
 Type=Application
 Categories=Network;
 StartupNotify=false
-Actions=Visible;
+Actions=Tray;
 
-[Desktop Action Visible]
+[Desktop Action Tray]
 Name=btsync-qt
-Exec=@BIN_PREFIX@/btsyncqt -s
+Exec=@BIN_PREFIX@/btsyncqt -t
 StartupNotify=true
